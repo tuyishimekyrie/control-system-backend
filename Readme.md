@@ -1,7 +1,18 @@
-
+<div>
+<img 
+  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original-wordmark.svg"  
+ width="60px" height="60px" 
+  alt="Next.js Logo"
+/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/express/express-original-wordmark.svg" width="60px" height="60px"/>
+          
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-plain-wordmark.svg" width="60px" height="60px"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original-wordmark.svg" width="60px" height="60px" />          
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg" width="60px" height="60px"/>
+</div>
 # ControlBackend
 
-ControlBackend is a Node.js backend application built with TypeScript and Express. 
+ControlBackend is a Node.js backend application built with TypeScript and Express.
 This project sets up a basic Express server with TypeScript for type safety and development efficiency.
 
 ## Table of Contents
@@ -59,4 +70,3 @@ npm run build
 - `npm run server`: Starts the server in development mode with `nodemon`.
 - `npm run start`: Starts the server with `ts-node` (useful for running in production after building).
 - `npm run build`: Compiles TypeScript files into JavaScript.
-
