@@ -1,3 +1,4 @@
+![Next.js Logo](https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original-wordmark.svg)
 <div>
 <img 
   src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original-wordmark.svg"  
@@ -5,6 +6,7 @@
  style="background-color: white;"
   alt="Next.js Logo"
 />
+
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/express/express-original-wordmark.svg" width="60px" height="60px" style="background-color: white;"/>
           
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-plain-wordmark.svg" width="60px" height="60px"/>
