@@ -1,6 +1,4 @@
-Sure! Here's a basic `README.md` template for your Node.js backend project:
 
-```markdown
 # ControlBackend
 
 ControlBackend is a Node.js backend application built with TypeScript and Express. 
