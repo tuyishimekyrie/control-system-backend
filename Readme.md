@@ -3,7 +3,8 @@ Sure! Here's a basic `README.md` template for your Node.js backend project:
 ```markdown
 # ControlBackend
 
-ControlBackend is a Node.js backend application built with TypeScript and Express. This project sets up a basic Express server with TypeScript for type safety and development efficiency.
+ControlBackend is a Node.js backend application built with TypeScript and Express. 
+This project sets up a basic Express server with TypeScript for type safety and development efficiency.
 
 ## Table of Contents
 
