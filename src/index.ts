@@ -2,6 +2,7 @@ import express from "express";
 import { dbPromise } from "../drizzle/db";
 import router from "./routes";
 import dotenv from 'dotenv';
+import { logger } from "./utils/Logger";
 
 dotenv.config();
 
@@ -18,9 +19,9 @@ app.get("/", (req, res) => {
 app.listen(port, async () => {
   try {
     const db = await dbPromise;
-    console.log("Database connection established");
+    logger.info("Database connection established");
   } catch (error) {
-    console.error("Failed to connect to the database");
+    logger.error("Failed to connect to the database");
   }
-  console.log(`Server running at http://localhost:${port}`);
+  logger.info(`Server running at http://localhost:${port}`);
 });

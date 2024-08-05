@@ -1,6 +1,6 @@
 import express, { Router } from "express";
 import http from "http";
-import homeRoute from "./Home.route"
+import homeRoute from "./home.route"
 
 const app = express();
 

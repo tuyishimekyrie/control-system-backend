@@ -1,6 +1,7 @@
 // src/drizzle/db.ts
 import { drizzle } from "drizzle-orm/mysql2";
 import mysql from "mysql2/promise";
+import { logger } from "../src/utils/Logger";
 
 async function createDbConnection() {
   try {
@@ -21,11 +22,11 @@ async function createDbConnection() {
       // database: "controlsystem"
     });
 
-    console.log("Database connected successfully");
+    logger.info("Database connected successfully");
 
     return drizzle(connection);
   } catch (error) {
-    console.error("Database connection failed", error);
+    logger.error("Database connection failed", error);
     throw error;
   }
 }
