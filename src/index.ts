@@ -1,11 +1,22 @@
-import express, {Request,Response} from "express";
+// src/index.ts
+import express from "express";
+import { dbPromise } from "../drizzle/db";
 
 const app = express();
+const port = 3000;
 
-app.get("/", (req:Request,res:Response) => {
-    res.send("Hello World!")
-})
+app.use(express.json());
 
-app.listen(4000, () => {
-    console.log("Server is listening on port 4000");
-})
+app.get("/", (req, res) => {
+  res.send("hello world");
+});
+
+app.listen(port, async () => {
+  try {
+    const db = await dbPromise;
+    console.log("Database connection established");
+  } catch (error) {
+    console.error("Failed to connect to the database");
+  }
+  console.log(`Server running at http://localhost:${port}`);
+});

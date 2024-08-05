@@ -8,18 +8,25 @@
     "build": "tsc",
     "prestarts": "ts-node src/index.ts",
     "start": "node dist/index.js",
-    "prod": "npm run build && npm run start"
+    "prod": "npm run build && npm run start",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "drizzle:studio": "drizzle-kit studio"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "drizzle-orm": "^0.32.1",
     "express": "^4.19.2",
+    "mysql2": "^3.11.0",
     "nodemon": "^3.1.4"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
     "@types/node": "^22.1.0",
+    "drizzle-kit": "^0.23.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   }
