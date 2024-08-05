@@ -1,9 +1,8 @@
-// src/index.ts
 import express from "express";
 import { dbPromise } from "../drizzle/db";
 
 const app = express();
-const port = 3000;
+const port = process.env.port;
 
 app.use(express.json());
 
