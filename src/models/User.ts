@@ -1,20 +1,25 @@
-import { mysqlTable } from "drizzle-orm/mysql-core";
 import {
-  timestamp,
+  date,
+  mysqlTable,
+  serial,
   text,
+  timestamp,
+  varchar,
 } from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable("user", {
-  id: text("id")
+  id: varchar("id", { length: 256 })
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   name: text("name"),
   email: text("email"),
-  emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
-  password: text("password"), 
+  password: text("password"),
+  createdAt: timestamp("createdAt").$default(() => new Date()),
+  updatedAt: timestamp("updatedAt")
+    .$default(() => new Date())
+    .$onUpdate(() => new Date()),
 });
 
-
-export type UserType = typeof users.$inferSelect; // return type when queried
-export type NewUser = typeof users.$inferInsert; // insert type
+export type UserType = typeof users.$inferSelect; // Type when queried
+export type NewUser = typeof users.$inferInsert; // Type for inserting new user

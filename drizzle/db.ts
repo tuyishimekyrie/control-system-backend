@@ -32,4 +32,4 @@ async function createDbConnection() {
 }
 
 // Export a promise that resolves to the DB instance
-export const dbPromise = createDbConnection();
+export const dbObj = createDbConnection();
