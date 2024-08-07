@@ -8,7 +8,7 @@ import {
   varchar,
 } from "drizzle-orm/mysql-core";
 
-export const UserRole = mysqlEnum('role', ['user', 'manage']);
+export const UserRole = mysqlEnum('role', ['user', 'manager']);
 
 export const users = mysqlTable("user", {
   id: varchar("id", { length: 256 })

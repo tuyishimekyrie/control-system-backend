@@ -3,7 +3,6 @@ import { Request, Response } from "express";
 import { ZodError } from "zod";
 import { dbObj } from "../../drizzle/db";
 import { users } from "../models";
-import { UserService } from "../services";
 import { loginSchema } from "../validations";
 import { logger } from "../utils/Logger";
 import bcrypt from "bcryptjs";
@@ -58,7 +57,7 @@ export const loginController = async (req: Request, res: Response) => {
         maxAge: 3600000, // 1 hour in milliseconds
       });
         
-      res.status(200).send(`User logged in successfully`);
+      res.status(200).send(`User logged in successfully, token: ${token}`);
     } else {
       res.status(400).send(`Invalid password`);
     }
