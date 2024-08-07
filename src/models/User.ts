@@ -1,11 +1,14 @@
 import {
   date,
+  mysqlEnum,
   mysqlTable,
   serial,
   text,
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
+
+export const UserRole = mysqlEnum('role', ['user', 'manage']);
 
 export const users = mysqlTable("user", {
   id: varchar("id", { length: 256 })
@@ -15,6 +18,7 @@ export const users = mysqlTable("user", {
   email: text("email"),
   image: text("image"),
   password: text("password"),
+   role: UserRole,
   createdAt: timestamp("createdAt").$default(() => new Date()),
   updatedAt: timestamp("updatedAt")
     .$default(() => new Date())

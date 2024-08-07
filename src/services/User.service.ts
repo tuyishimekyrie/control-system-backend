@@ -25,6 +25,7 @@ export class UserService {
         password: hashedPassword,
         createdAt: new Date(),
         updatedAt: new Date(),
+        role:"user"
       });
 
       console.log("User registered successfully");
