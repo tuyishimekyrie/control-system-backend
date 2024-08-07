@@ -36,6 +36,20 @@
       "when": 1722971288038,
       "tag": "0004_next_penance",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1723019527665,
+      "tag": "0005_nervous_george_stacy",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1723033313255,
+      "tag": "0006_simple_stephen_strange",
+      "breakpoints": true
     }
   ]
 }
