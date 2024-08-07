@@ -3,6 +3,7 @@ import express from "express";
 import { dbObj } from "../drizzle/db";
 import router from "./routes";
 import { logger } from "./utils/Logger";
+import cors from "cors"
 
 dotenv.config();
 
@@ -11,7 +12,7 @@ const port = process.env.port ;
 
 app.use(express.json());
 app.use(router);
-
+app.use(cors());
 app.get("/", (req, res) => {
   res.send("hello world");
 });
