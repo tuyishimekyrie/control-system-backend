@@ -3,10 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.dbPromise = void 0;
+exports.dbObj = void 0;
 // src/drizzle/db.ts
 const mysql2_1 = require("drizzle-orm/mysql2");
 const promise_1 = __importDefault(require("mysql2/promise"));
+const Logger_1 = require("../src/utils/Logger");
 async function createDbConnection() {
     try {
         const connection = await promise_1.default.createConnection({
@@ -22,13 +23,13 @@ async function createDbConnection() {
             // password:"kyrie",
             // database: "controlsystem"
         });
-        console.log("Database connected successfully");
+        Logger_1.logger.info("Database connected successfully");
         return (0, mysql2_1.drizzle)(connection);
     }
     catch (error) {
-        console.error("Database connection failed", error);
+        Logger_1.logger.error("Database connection failed", error);
         throw error;
     }
 }
 // Export a promise that resolves to the DB instance
-exports.dbPromise = createDbConnection();
+exports.dbObj = createDbConnection();

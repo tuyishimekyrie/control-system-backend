@@ -7,7 +7,7 @@
     "server": "nodemon --exec ts-node src/index.ts",
     "build": "tsc",
     "prestarts": "ts-node src/index.ts",
-    "start": "node dist/index.js",
+    "start": "node dist/src/index.js",
     "prod": "npm run build && npm run start",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
