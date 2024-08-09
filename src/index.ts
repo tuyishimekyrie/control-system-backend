@@ -11,14 +11,20 @@ dotenv.config();
 
 const app = express();
 const port = process.env.port;
+// CORS configuration
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN || '*', 
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  allowedHeaders: 'Content-Type,Authorization',
+  credentials: true,
+};
 
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(router);
-app.use(cors());
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
 app.get("/", (req, res) => {
   res.send("hello world");
 });
