@@ -4,6 +4,7 @@ import homeRoute from "./home.route"
 import registerRoute from "./register.route";
 import loginRoute from "./login.route";
 import adminRoute from "./admin.route";
+import logoutRoute from "./logout.route";
 
 const app = express();
 
@@ -15,7 +16,8 @@ const routers: Router[] = [
     homeRoute,
     registerRoute,
     loginRoute,
-    adminRoute
+    adminRoute,
+    logoutRoute
 ];
 
 
