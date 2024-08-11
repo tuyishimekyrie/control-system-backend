@@ -6,9 +6,9 @@ import { users } from "../models";
 import { loginSchema } from "../validations";
 import { logger } from "../utils/Logger";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken"; 
+import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key"; 
+const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
 export const loginController = async (req: Request, res: Response) => {
   try {
     const body = req.body;
@@ -56,8 +56,15 @@ export const loginController = async (req: Request, res: Response) => {
         secure: process.env.NODE_ENV === "production", // Only set the cookie over HTTPS in production
         maxAge: 3600000, // 1 hour in milliseconds
       });
-        
-      res.status(200).send(`User logged in successfully, token: ${token}`);
+
+      res.status(200).json({
+        message: "User logged in successfully",
+        token,
+        user: {
+          email: dbUser.email,
+          name: dbUser.name,
+        },
+      });
     } else {
       res.status(400).send(`Invalid password`);
     }
