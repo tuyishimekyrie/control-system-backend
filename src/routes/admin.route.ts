@@ -1,10 +1,13 @@
 import express from "express";
-import { authenticateMiddleware, authorizeMiddleware } from "../middleware/authenticateToken";
+import {
+  authenticateMiddleware,
+  authorizeMiddleware,
+} from "../middleware/authenticateToken";
 import { adminController } from "../controllers";
 
 const adminRoute = express.Router();
 
-adminRoute.use(authenticateMiddleware); // Apply authentication middleware
+// adminRoute.use(authenticateMiddleware);
 
 adminRoute.get(
   "/admin/dashboard",
