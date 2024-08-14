@@ -6,6 +6,7 @@ import loginRoute from "./login.route";
 import adminRoute from "./admin.route";
 import logoutRoute from "./logout.route";
 import logsRoute from "./logs.route";
+import userRoute from "./users.route";
 
 const app = express();
 
@@ -19,6 +20,7 @@ const routers: Router[] = [
   adminRoute,
   logoutRoute,
   logsRoute,
+  userRoute,
 ];
 
 router.use("/api/v1", routers);
