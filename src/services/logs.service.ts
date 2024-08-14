@@ -1,5 +1,6 @@
 import { dbObj } from "../../drizzle/db";
 import { userLogs } from "../models/userlogs";
+import { eq } from "drizzle-orm";
 
 export class LogService {
   public async logUserActivity(
@@ -27,6 +28,44 @@ export class LogService {
       console.log("User activity logged successfully");
     } catch (error: any) {
       console.error(`Error logging user activity: ${error.message}`);
+      throw error;
+    }
+  }
+
+  public async getAllLogs() {
+    try {
+      return await (await dbObj).select().from(userLogs);
+    } catch (error: any) {
+      console.error(`Error fetching logs: ${error.message}`);
+      throw error;
+    }
+  }
+
+  public async getLogById(id: string) {
+    try {
+      const log = await (await dbObj)
+        .select()
+        .from(userLogs)
+        .where(eq(userLogs.id, id))
+        .limit(1);
+
+      if (log.length === 0) {
+        throw new Error("Log not found");
+      }
+
+      return log[0];
+    } catch (error: any) {
+      console.error(`Error fetching log by ID: ${error.message}`);
+      throw error;
+    }
+  }
+
+  public async deleteAllLogs() {
+    try {
+      await (await dbObj).delete(userLogs);
+      console.log("All logs deleted successfully");
+    } catch (error: any) {
+      console.error(`Error deleting all logs: ${error.message}`);
       throw error;
     }
   }

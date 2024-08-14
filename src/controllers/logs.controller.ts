@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import { ZodError, z } from "zod";
+import { ZodError } from "zod";
 import { LogService } from "../services/logs.service";
+import { z } from "zod";
 
 const LogSchema = z.object({
   name: z.string(),
@@ -43,5 +44,32 @@ export const logUserActivityController = async (
     } else {
       res.status(500).send("Internal Server Error");
     }
+  }
+};
+
+export const getAllLogsController = async (req: Request, res: Response) => {
+  try {
+    const logs = await logService.getAllLogs();
+    res.status(200).json(logs);
+  } catch (error: any) {
+    res.status(500).send(`Internal Server Error: ${error.message}`);
+  }
+};
+
+export const getLogByIdController = async (req: Request, res: Response) => {
+  try {
+    const log = await logService.getLogById(req.params.id);
+    res.status(200).json(log);
+  } catch (error: any) {
+    res.status(404).send(`Log not found: ${error.message}`);
+  }
+};
+
+export const deleteAllLogsController = async (req: Request, res: Response) => {
+  try {
+    await logService.deleteAllLogs();
+    res.status(200).send("All logs deleted successfully");
+  } catch (error: any) {
+    res.status(500).send(`Internal Server Error: ${error.message}`);
   }
 };
