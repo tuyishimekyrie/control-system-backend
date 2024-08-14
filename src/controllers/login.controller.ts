@@ -63,12 +63,13 @@ export const loginController = async (req: Request, res: Response) => {
         user: {
           email: dbUser.email,
           name: dbUser.name,
+          role: dbUser.role,
         },
       });
     } else {
       res.status(400).send(`Invalid password`);
     }
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof ZodError) {
       res.status(400).json({
         message: "Invalid data",
