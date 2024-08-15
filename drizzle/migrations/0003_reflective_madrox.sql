@@ -1,1 +1,0 @@
-ALTER TABLE `cities` MODIFY COLUMN `country_id` serial AUTO_INCREMENT;
