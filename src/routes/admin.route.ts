@@ -7,7 +7,7 @@ import { adminController } from "../controllers";
 
 const adminRoute = express.Router();
 
-// adminRoute.use(authenticateMiddleware);
+// adminRoute.use(authenticateMiddleware); // Apply authentication middleware
 
 adminRoute.get(
   "/admin/dashboard",

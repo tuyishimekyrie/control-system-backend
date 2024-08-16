@@ -11,8 +11,9 @@ import categoryRoute from "./category.route";
 import blockedUrlRoute from "./blockedurl.route";
 import keywordRoute from "./keyword.route";
 import filterDataRoute from "./filterData.route";
+import blockRouter from "./blocked.route";
 
-const app = express();
+const app = express(); 
 
 const server = http.createServer(app);
 
@@ -28,7 +29,8 @@ const routers: Router[] = [
   categoryRoute,
   blockedUrlRoute,
   keywordRoute,
-  filterDataRoute
+  filterDataRoute,
+ blockRouter
 ];
 
 router.use("/api/v1", routers);
