@@ -1,6 +1,7 @@
 import { dbObj } from "../../drizzle/db";
 import { userLogs } from "../models/userlogs";
-import { eq } from "drizzle-orm";
+import { eq, sum } from "drizzle-orm";
+import { getBaseDomain } from "../utils/ParsingUrl";
 
 export class LogService {
   public async logUserActivity(
@@ -41,25 +42,6 @@ export class LogService {
     }
   }
 
-  public async getLogById(id: string) {
-    try {
-      const log = await (await dbObj)
-        .select()
-        .from(userLogs)
-        .where(eq(userLogs.id, id))
-        .limit(1);
-
-      if (log.length === 0) {
-        throw new Error("Log not found");
-      }
-
-      return log[0];
-    } catch (error: any) {
-      console.error(`Error fetching log by ID: ${error.message}`);
-      throw error;
-    }
-  }
-
   public async deleteAllLogs() {
     try {
       await (await dbObj).delete(userLogs);
@@ -68,5 +50,45 @@ export class LogService {
       console.error(`Error deleting all logs: ${error.message}`);
       throw error;
     }
+  }
+  public async getTotalTimeSpentPerWebsite() {
+    try {
+      const database = await dbObj;
+
+      const logs = await database.select().from(userLogs);
+
+      const aggregatedData = logs.reduce((acc: any, log: any) => {
+        const baseDomain = getBaseDomain(log.url);
+        if (!acc[baseDomain]) {
+          acc[baseDomain] = 0;
+        }
+        acc[baseDomain] += this.parseDuration(log.duration);
+        return acc;
+      }, {});
+
+      const result = Object.keys(aggregatedData).map((domain) => ({
+        url: domain,
+        totalDuration: aggregatedData[domain],
+      }));
+
+      const top10Result = result
+        .sort((a, b) => b.totalDuration - a.totalDuration)
+        .slice(0, 10);
+
+      console.log("Top 10 websites by total time spent:");
+      console.log(top10Result);
+
+      return top10Result;
+    } catch (error: any) {
+      console.error(
+        `Error fetching total time spent per website: ${error.message}`
+      );
+      throw error;
+    }
+  }
+
+  private parseDuration(duration: string): number {
+    const [hours, minutes, seconds] = duration.split(":").map(Number);
+    return hours * 3600 + minutes * 60 + seconds;
   }
 }

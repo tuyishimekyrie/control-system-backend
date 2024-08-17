@@ -56,19 +56,23 @@ export const getAllLogsController = async (req: Request, res: Response) => {
   }
 };
 
-export const getLogByIdController = async (req: Request, res: Response) => {
-  try {
-    const log = await logService.getLogById(req.params.id);
-    res.status(200).json(log);
-  } catch (error: any) {
-    res.status(404).send(`Log not found: ${error.message}`);
-  }
-};
-
 export const deleteAllLogsController = async (req: Request, res: Response) => {
   try {
     await logService.deleteAllLogs();
     res.status(200).send("All logs deleted successfully");
+  } catch (error: any) {
+    res.status(500).send(`Internal Server Error: ${error.message}`);
+  }
+};
+
+export const getTotalTimeSpentPerWebsiteController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const logService = new LogService();
+    const data = await logService.getTotalTimeSpentPerWebsite();
+    res.status(200).json(data);
   } catch (error: any) {
     res.status(500).send(`Internal Server Error: ${error.message}`);
   }
