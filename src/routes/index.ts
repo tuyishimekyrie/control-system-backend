@@ -13,7 +13,7 @@ import keywordRoute from "./keyword.route";
 import filterDataRoute from "./filterData.route";
 import blockRouter from "./blocked.route";
 
-const app = express(); 
+const app = express();
 
 const server = http.createServer(app);
 
@@ -30,7 +30,7 @@ const routers: Router[] = [
   blockedUrlRoute,
   keywordRoute,
   filterDataRoute,
- blockRouter
+  blockRouter,
 ];
 
 router.use("/api/v1", routers);

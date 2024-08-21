@@ -3,7 +3,7 @@ import { dbObj as db } from "../../drizzle/db";
 import { Category, Keyword, URLFilter } from "../models";
 import { Request, Response } from "express";
 
-const keywordController =  async (req:Request, res:Response) => {
+const keywordController = async (req: Request, res: Response) => {
   try {
     // Fetch categories
     const categories = await (await db).select().from(Category).execute();

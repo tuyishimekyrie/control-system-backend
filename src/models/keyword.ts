@@ -6,4 +6,3 @@ export const Keyword = mysqlTable("Keyword", {
     .$defaultFn(() => crypto.randomUUID()),
   keyword: varchar("name", { length: 256 }).notNull().unique(),
 });
-

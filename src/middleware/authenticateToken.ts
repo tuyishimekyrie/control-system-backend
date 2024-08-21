@@ -17,7 +17,7 @@ interface CustomRequest extends Request {
 export const authenticateMiddleware = async (
   req: CustomRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     // Extract token from header or cookie

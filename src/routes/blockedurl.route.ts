@@ -7,5 +7,4 @@ const blockedUrlRoute = Router();
 
 blockedUrlRoute.post("/blocked-urls", insertBlockedURL);
 
-
 export default blockedUrlRoute;

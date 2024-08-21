@@ -14,7 +14,7 @@ export const logger = createLogger({
     format.timestamp({ format: "YYYY-MM-DD HH:mm" }),
     format.printf(({ timestamp, level, message, service }) => {
       return `\x1b[93m [${timestamp}] \x1b[36m ${service} ${level}: ${message}\x1b[0m`;
-    })
+    }),
   ),
   defaultMeta: {
     service: "API",

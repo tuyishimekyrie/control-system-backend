@@ -6,4 +6,3 @@ export const URLFilter = mysqlTable("URLFilter", {
     .$defaultFn(() => crypto.randomUUID()),
   url: varchar("name", { length: 256 }).notNull().unique(),
 });
-

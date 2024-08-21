@@ -8,7 +8,7 @@ export class LogService {
     name: string,
     email: string,
     url: string,
-    duration: number
+    duration: number,
   ): Promise<void> {
     try {
       const hours = Math.floor(duration / 3600);
@@ -81,7 +81,7 @@ export class LogService {
       return top10Result;
     } catch (error: any) {
       console.error(
-        `Error fetching total time spent per website: ${error.message}`
+        `Error fetching total time spent per website: ${error.message}`,
       );
       throw error;
     }

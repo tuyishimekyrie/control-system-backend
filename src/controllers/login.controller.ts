@@ -44,7 +44,7 @@ export const loginController = async (req: Request, res: Response) => {
         JWT_SECRET,
         {
           expiresIn: "1h",
-        }
+        },
       );
 
       // Set token in header
