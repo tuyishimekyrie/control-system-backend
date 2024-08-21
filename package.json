@@ -14,7 +14,11 @@
     "db:push": "drizzle-kit push",
     "drizzle:studio": "drizzle-kit studio",
     "lint:write": "npx prettier . --write",
-    "lint:check": "npx prettier . --check"
+    "lint:check": "npx prettier . --check",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
   },
   "author": "",
   "license": "ISC",
@@ -47,6 +51,8 @@
     "@types/node": "^22.1.0",
     "@types/node-cron": "^3.0.11",
     "drizzle-kit": "^0.23.1",
+    "husky": "^9.1.5",
+    "lint-staged": "^15.2.9",
     "nodemon": "^3.1.4",
     "prettier": "3.3.3",
     "ts-node": "^10.9.2",
