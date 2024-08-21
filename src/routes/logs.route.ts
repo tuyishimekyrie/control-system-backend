@@ -12,7 +12,7 @@ logsRoute.post("/user/logs", logUserActivityController);
 logsRoute.get("/user/logs", getAllLogsController);
 logsRoute.get(
   "/user/logs/total-time-per-website",
-  getTotalTimeSpentPerWebsiteController
+  getTotalTimeSpentPerWebsiteController,
 );
 logsRoute.delete("/user/logs", deleteAllLogsController);
 

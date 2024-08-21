@@ -1,6 +1,6 @@
-import { dbObj } from "../../drizzle/db"; 
+import { dbObj } from "../../drizzle/db";
 import { users } from "../models";
-import bcrypt from "bcryptjs"; 
+import bcrypt from "bcryptjs";
 
 export class UserService {
   private async hashPassword(password: string): Promise<string> {
@@ -11,7 +11,7 @@ export class UserService {
     name: string,
     email: string,
     image: string,
-    password: string
+    password: string,
   ): Promise<void> {
     try {
       // Hash the password
@@ -25,13 +25,13 @@ export class UserService {
         password: hashedPassword,
         createdAt: new Date(),
         updatedAt: new Date(),
-        role:"user"
+        role: "user",
       });
 
       console.log("User registered successfully");
-    } catch (error:any) {
+    } catch (error: any) {
       console.error(`Error registering user: ${error.message}`);
-      throw error; 
+      throw error;
     }
   }
 }

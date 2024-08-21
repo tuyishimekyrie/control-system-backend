@@ -7,16 +7,15 @@ import { dbObj } from "../drizzle/db";
 import router from "./routes";
 import { logger } from "./utils/Logger";
 
-
 dotenv.config();
 
 const app = express();
 const port = process.env.port;
 
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN || '*', 
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  allowedHeaders: 'Content-Type,Authorization',
+  origin: process.env.CORS_ORIGIN || "*",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  allowedHeaders: "Content-Type,Authorization",
   credentials: true,
 };
 
@@ -27,10 +26,8 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.get("/", (req, res) => {
-  res.send("hello world");
+  res.send("hello world!");
 });
-
-
 
 app.listen(port, async () => {
   try {

@@ -12,7 +12,9 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
-    "drizzle:studio": "drizzle-kit studio"
+    "drizzle:studio": "drizzle-kit studio",
+    "lint:write": "npx prettier . --write",
+    "lint:check": "npx prettier . --check"
   },
   "author": "",
   "license": "ISC",
@@ -46,6 +48,7 @@
     "@types/node-cron": "^3.0.11",
     "drizzle-kit": "^0.23.1",
     "nodemon": "^3.1.4",
+    "prettier": "3.3.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4",
     "winston": "^3.13.1"

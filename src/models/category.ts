@@ -1,8 +1,4 @@
-import {
-    json,
-    mysqlTable,
-    varchar
-} from "drizzle-orm/mysql-core";
+import { json, mysqlTable, varchar } from "drizzle-orm/mysql-core";
 
 export const Category = mysqlTable("Category", {
   id: varchar("id", { length: 256 })

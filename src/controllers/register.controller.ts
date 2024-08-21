@@ -33,7 +33,7 @@ export const registerController = async (req: Request, res: Response) => {
         .send(`User with email ${body.email} already exists`);
 
     const { name, email, image, password } = body;
-   
+
     await userService.registerUser(name, email, image, password);
     res.status(201).send(`User registered successfully`);
   } catch (error) {

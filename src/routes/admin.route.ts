@@ -12,7 +12,7 @@ const adminRoute = express.Router();
 adminRoute.get(
   "/admin/dashboard",
   authorizeMiddleware(["manager"]),
-  adminController
+  adminController,
 ); // Apply role authorization middleware
 
 export default adminRoute;

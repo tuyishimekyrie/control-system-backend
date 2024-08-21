@@ -15,7 +15,7 @@ const logService = new LogService();
 
 export const logUserActivityController = async (
   req: Request,
-  res: Response
+  res: Response,
 ) => {
   try {
     console.log("Received data:", req.body);
@@ -67,7 +67,7 @@ export const deleteAllLogsController = async (req: Request, res: Response) => {
 
 export const getTotalTimeSpentPerWebsiteController = async (
   req: Request,
-  res: Response
+  res: Response,
 ) => {
   try {
     const logService = new LogService();
