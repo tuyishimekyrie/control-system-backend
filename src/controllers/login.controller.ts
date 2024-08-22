@@ -1,12 +1,12 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { Request, Response } from "express";
 import { ZodError } from "zod";
 import { dbObj } from "../../drizzle/db";
 import { users } from "../models";
 import { loginSchema } from "../validations";
-import { logger } from "../utils/Logger";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { logger } from "../utils/Logger";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
 export const loginController = async (req: Request, res: Response) => {
@@ -17,6 +17,20 @@ export const loginController = async (req: Request, res: Response) => {
       return res.status(400).json({
         message: "Validation failed",
         errors: parseSchema.error.errors,
+      });
+    }
+    const userIsSubscribed = await (await dbObj)
+      .select()
+      .from(users)
+      .where(eq(users.email, body.email))
+      .limit(1);
+
+    console.log("userIsSubscribed", userIsSubscribed);
+    if (!userIsSubscribed[0]?.isSubscribed) {
+      logger.error("Not Authorized");
+      return res.status(400).json({
+        message:
+          "Not Authorized to use application, Please seek assistance from your manager",
       });
     }
 

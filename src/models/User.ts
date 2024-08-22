@@ -1,8 +1,7 @@
 import {
-  date,
+  boolean,
   mysqlEnum,
   mysqlTable,
-  serial,
   text,
   timestamp,
   varchar,
@@ -18,6 +17,7 @@ export const users = mysqlTable("user", {
   email: text("email"),
   image: text("image"),
   password: text("password"),
+  isSubscribed: boolean("isSubscribed").$default(() => false),
   role: UserRole,
   createdAt: timestamp("createdAt").$default(() => new Date()),
   updatedAt: timestamp("updatedAt")
