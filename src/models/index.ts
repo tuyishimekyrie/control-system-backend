@@ -3,3 +3,4 @@ export * from "./category";
 export * from "./keyword";
 export * from "./urlfilter";
 export * from "./userlogs";
+export * from "./Blocked";
