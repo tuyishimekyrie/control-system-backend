@@ -16,11 +16,6 @@ export class BlockedWebsiteController {
   ): Promise<void> => {
     try {
       const { name, url } = req.body;
-
-      if (!/^[a-zA-Z0-9\s]{1,70}$/.test(name)) {
-        throw new Error("Name must be alphanumeric and <= 70 characters.");
-      }
-
       await this.service.createBlockedWebsite(name, url);
       res.status(201).json({ message: "Website blocked successfully" });
     } catch (error: any) {

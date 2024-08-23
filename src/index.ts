@@ -8,6 +8,8 @@ import { dbObj } from "../drizzle/db";
 import router from "./routes";
 import { logger } from "./utils/Logger";
 import { BlockedWebsiteService } from "./services/BlockedWebsiteService";
+import { myEventListener } from "./utils/notificationsListener";
+
 
 dotenv.config();
 
@@ -37,7 +39,7 @@ app.use(router);
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
-
+myEventListener();
 app.get("/", (req, res) => {
   res.send("hello world");
 });
