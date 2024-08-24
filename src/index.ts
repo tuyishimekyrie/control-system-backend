@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import rateLimit from "express-rate-limit";
 import { dbObj } from "../drizzle/db";
 import router from "./routes";
 import { logger } from "./utils/Logger";
@@ -19,12 +20,23 @@ const corsOptions = {
   credentials: true,
 };
 
+// Rate limiting configuration
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  message: "Too many requests from this IP, please try again after 15 minutes",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 app.use(cors(corsOptions));
+app.use(limiter); // Apply the rate limiter to all routes
 app.use(express.json());
 app.use(router);
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+
 app.get("/", (req, res) => {
   res.send("hello world");
 });
