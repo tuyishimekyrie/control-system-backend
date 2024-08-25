@@ -7,6 +7,7 @@ import rateLimit from "express-rate-limit";
 import { dbObj } from "../drizzle/db";
 import router from "./routes";
 import { logger } from "./utils/Logger";
+import { BlockedWebsiteService } from "./services/BlockedWebsiteService";
 
 dotenv.config();
 
