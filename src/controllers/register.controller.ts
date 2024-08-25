@@ -19,23 +19,66 @@ export const registerController = async (req: Request, res: Response) => {
       });
     }
 
-    const usersResult = await (await dbObj)
-      .select()
+    const {
+      name,
+      email,
+      image,
+      password,
+      role,
+      isOrganization,
+      organizationId,
+      orgName,
+    } = body;
+
+    if (isOrganization) {
+      if (role === "manager") {
+        if (!orgName) {
+          return res.status(400).json({
+            message: "Organization name is required for manager registration",
+          });
+        }
+        await userService.registerOrganizationAndManager(
+          orgName,
+          name,
+          email,
+          password,
+          image,
+        );
+        return res
+          .status(201)
+          .send("Organization and manager registered successfully");
+      } else {
+        return res.status(400).json({
+          message: "Invalid role for organization registration",
+        });
+      }
+    }
+
+    if (role === "admin" && organizationId) {
+      return res.status(400).json({
+        message: "Admin cannot be associated with an organization",
+      });
+    }
+
+    const usersResult = await ((await dbObj).select() as any)
       .from(users)
-      .where(eq(users.email, body.email))
+      .where(eq(users.email, email))
+      .where(eq(users.organizationId, organizationId || null))
       .limit(1);
 
-    let dbUser = usersResult[0];
+    if (usersResult.length > 0) {
+      return res.status(400).send(`User with email ${email} already exists`);
+    }
 
-    if (dbUser)
-      return res
-        .status(400)
-        .send(`User with email ${body.email} already exists`);
-
-    const { name, email, image, password } = body;
-
-    await userService.registerUser(name, email, image, password);
-    res.status(201).send(`User registered successfully`);
+    await userService.registerUser(
+      name,
+      email,
+      image,
+      password,
+      role,
+      organizationId,
+    );
+    res.status(201).send("User registered successfully");
   } catch (error) {
     if (error instanceof ZodError) {
       res.status(400).json({

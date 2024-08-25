@@ -6,8 +6,9 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
+import { organizations } from "./organizations";
 
-export const UserRole = mysqlEnum("role", ["user", "manager"]);
+export const UserRole = mysqlEnum("role", ["user", "manager", "admin"]);
 
 export const users = mysqlTable("user", {
   id: varchar("id", { length: 256 })
@@ -17,13 +18,17 @@ export const users = mysqlTable("user", {
   email: text("email"),
   image: text("image"),
   password: text("password"),
-  isSubscribed: boolean("isSubscribed").$default(() => false),
   role: UserRole,
+  organizationId: varchar("organizationId", { length: 256 }).references(
+    () => organizations.id,
+    { onDelete: "cascade" },
+  ),
+  isSubscribed: boolean("isSubscribed").$default(() => false),
   createdAt: timestamp("createdAt").$default(() => new Date()),
   updatedAt: timestamp("updatedAt")
     .$default(() => new Date())
     .$onUpdate(() => new Date()),
 });
 
-export type UserType = typeof users.$inferSelect; // Type when queried
-export type NewUser = typeof users.$inferInsert; // Type for inserting new user
+export type UserType = typeof users.$inferSelect;
+export type NewUser = typeof users.$inferInsert;

@@ -13,6 +13,7 @@ import logsRoute from "./logs.route";
 import registerRoute from "./register.route";
 import subscriptionRoute from "./subscription.route";
 import userRoute from "./users.route";
+import orgsRoute from "./organization.route";
 
 const app = express();
 
@@ -33,6 +34,7 @@ const routers: Router[] = [
   filterDataRoute,
   blockRouter,
   subscriptionRoute,
+  orgsRoute,
 ];
 
 router.use("/api/v1", routers);
