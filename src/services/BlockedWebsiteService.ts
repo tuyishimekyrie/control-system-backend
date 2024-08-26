@@ -1,12 +1,14 @@
-import { dbObj } from "../../drizzle/db";
-import { blockedWebsites } from "../models/Blocked";
 import { eq } from "drizzle-orm";
 import fs from "fs";
 import path from "path";
 import sudo from "sudo-prompt";
+import { dbObj } from "../../drizzle/db";
+import { blockedWebsites } from "../models/Blocked";
+import { logger } from "../utils/Logger";
 
 export class BlockedWebsiteService {
   private hostsFilePath: string;
+  private tempFilePath: string;
 
   constructor() {
     this.hostsFilePath = path.join(
@@ -16,6 +18,9 @@ export class BlockedWebsiteService {
       "drivers",
       "etc",
       "hosts",
+    );
+    this.tempFilePath = path.resolve(
+      "C:\\Windows\\System32\\drivers\\etc\\hosts.temp",
     );
   }
 
@@ -108,26 +113,26 @@ export class BlockedWebsiteService {
   private async addHostEntry(name: string, url: string): Promise<void> {
     try {
       const domain = new URL(url).hostname;
-      const entry = `127.0.0.1 ${domain}\n`;
+      const entry = `127.0.0.1 ${domain}`;
+      logger.info(entry);
 
       const options = {
-        name: "control-system-backend",
+        name: "NodeJSApp",
       };
 
-      sudo.exec(
-        `echo ${JSON.stringify(entry)} >> "${this.hostsFilePath}"`,
-        options,
-        (error: any, stdout, stderr) => {
-          if (error) {
-            console.error(
-              `Error adding host entry using echo command: ${stderr || error.message}`,
-            );
-            this.addHostEntryFallback(entry);
-          } else {
-            console.log(`Host entry added successfully for ${name}`);
-          }
-        },
-      );
+      // Using a shell-safe command to append the entry to the hosts file
+      const command = `echo ${entry} >> "${this.hostsFilePath}"`;
+
+      sudo.exec(command, options, (error: any, stdout, stderr) => {
+        if (error) {
+          console.error(
+            `Error adding host entry using echo command: ${stderr || error.message}`,
+          );
+          this.addHostEntryFallback(entry);
+        } else {
+          console.log(`Host entry added successfully for ${name}`);
+        }
+      });
     } catch (error) {
       console.error(
         `Failed to create host entry. Error: ${(error as any).message}`,
@@ -156,48 +161,65 @@ export class BlockedWebsiteService {
   private async removeHostEntry(url: string): Promise<void> {
     try {
       const domain = new URL(url).hostname;
-      const entryPattern = `127.0.0.1 ${domain}`;
+      const entry = `127.0.0.1 ${domain}`;
 
-      const options = {
-        name: "ControlSystem",
-      };
+      const tempFilePath = path.join(process.env.TEMP || "", "hosts.temp");
 
-      console.log(`Attempting to remove entry: ${entryPattern}`);
+      const readCommand = `type "${this.hostsFilePath}"`;
+      sudo.exec(
+        readCommand,
+        { name: "MyAppName" },
+        (
+          error: Error | undefined,
+          stdout: string | Buffer | undefined,
+          stderr: string | Buffer | undefined,
+        ) => {
+          if (error) {
+            console.error(`Error reading hosts file: ${error.message}`);
+            return;
+          }
 
-      const command = `powershell -Command "
-            $content = Get-Content '${this.hostsFilePath}';
-            $lineRemoved = $false;
-            $newContent = @();
-            foreach ($line in $content) {
-                if ($line.Trim() -eq '${entryPattern}') {
-                    $lineRemoved = $true;
+          const fileContent =
+            typeof stdout === "string" ? stdout : stdout?.toString() || "";
+
+          const updatedContent = fileContent
+            .split("\n")
+            .filter((line) => !line.includes(entry))
+            .join("\n");
+
+          fs.writeFile(tempFilePath, updatedContent, (writeError) => {
+            if (writeError) {
+              console.error(
+                `Error writing to temporary file: ${writeError.message}`,
+              );
+              return;
+            }
+
+            const replaceCommand = `move /Y "${tempFilePath}" "${this.hostsFilePath}"`;
+            sudo.exec(
+              replaceCommand,
+              { name: "NodeJsApp" },
+              (replaceError: Error | undefined) => {
+                if (replaceError) {
+                  console.error(
+                    `Error replacing hosts file: ${replaceError.message}`,
+                  );
+                  throw new Error(
+                    `Failed to replace hosts file. ${(replaceError as any).message}`,
+                  );
                 } else {
-                    $newContent += $line;
+                  console.log(`Host entry removed successfully for ${domain}`);
                 }
-            }
-            $newContent | Set-Content '${this.hostsFilePath}';
-            if ($lineRemoved) { 
-                Write-Output 'Entry removed'
-            } else { 
-                Write-Output 'Entry not found'
-            }
-        "`;
-
-      sudo.exec(command, options, (error, stdout, stderr) => {
-        if (error) {
-          console.error(
-            `Error removing host entry using PowerShell command: ${stderr || error.message}`,
-          );
-          throw new Error(
-            `Error removing host entry: ${stderr || error.message}`,
-          );
-        }
-        console.log(`PowerShell output: ${stdout}`);
-        console.log(`Host entry operation completed for ${domain}`);
-      });
+              },
+            );
+          });
+        },
+      );
     } catch (error) {
-      console.error(`Error removing host entry: ${(error as any).message}`);
-      throw new Error("Failed to remove host entry.");
+      console.error(
+        `Failed to remove host entry. Error: ${(error as any).message}`,
+      );
+      throw new Error(`Failed to remove host entry. ${(error as any).message}`);
     }
   }
 

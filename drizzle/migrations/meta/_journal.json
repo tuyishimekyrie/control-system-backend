@@ -127,6 +127,41 @@
       "when": 1724422101951,
       "tag": "0025_oval_betty_ross",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "5",
+      "when": 1724654604587,
+      "tag": "0026_elite_alice",
+      "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "5",
+      "when": 1724655120926,
+      "tag": "0027_early_maximus",
+      "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "5",
+      "when": 1724655256532,
+      "tag": "0028_chubby_praxagora",
+      "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "5",
+      "when": 1724655889389,
+      "tag": "0029_magenta_silvermane",
+      "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "5",
+      "when": 1724656185495,
+      "tag": "0030_lively_devos",
+      "breakpoints": true
     }
   ]
 }

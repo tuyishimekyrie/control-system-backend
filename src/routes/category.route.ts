@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { dbObj as db } from "../../drizzle/db";
 import { Category, Keyword, URLFilter } from "../models";
-import { eq } from "drizzle-orm";
 
 const categoryRoute = Router();
 
@@ -25,18 +24,20 @@ categoryRoute.post("/categories", async (req, res) => {
   }
 });
 
-// Insert a new keyword
+// Insert a new keyword associated with a category
 categoryRoute.post("/keywords", async (req, res) => {
-  const { keyword } = req.body;
+  const { keyword, categoryId } = req.body;
 
-  if (!keyword) {
-    return res.status(400).json({ error: "Keyword is required" });
+  if (!keyword || !categoryId) {
+    return res
+      .status(400)
+      .json({ error: "Keyword and category ID are required" });
   }
 
   try {
     const newKeyword = await (await db)
       .insert(Keyword)
-      .values({ keyword })
+      .values({ keyword, categoryId })
       .execute();
 
     res.status(201).json(newKeyword);
@@ -44,7 +45,29 @@ categoryRoute.post("/keywords", async (req, res) => {
     res.status(500).json({ error: (error as Error).message });
   }
 });
-// Fetch all categories
+
+// Insert a new blocked URL associated with a category
+categoryRoute.post("/blocked-urls", async (req, res) => {
+  const { url, categoryId } = req.body;
+
+  if (!url || !categoryId) {
+    return res
+      .status(400)
+      .json({ error: "Blocked URL and category ID are required" });
+  }
+
+  try {
+    const newBlockedURL = await (await db)
+      .insert(URLFilter)
+      .values({ url, categoryId })
+      .execute();
+
+    res.status(201).json(newBlockedURL);
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+});
+
 // Fetch all categories
 categoryRoute.get("/categories", async (req, res) => {
   try {
@@ -70,12 +93,7 @@ categoryRoute.get("/keywords", async (req, res) => {
 // Fetch all blocked URLs
 categoryRoute.get("/blocked-urls", async (req, res) => {
   try {
-    const blockedURLs = await (
-      await db
-    )
-      .select()
-      .from(URLFilter) // Assuming 'URLFilter' is the correct table name
-      .execute();
+    const blockedURLs = await (await db).select().from(URLFilter).execute();
 
     res.status(200).json(blockedURLs);
   } catch (error) {

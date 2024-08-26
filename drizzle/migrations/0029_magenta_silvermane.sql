@@ -1,0 +1,1 @@
+ALTER TABLE `Keyword` MODIFY COLUMN `categoryId` varchar(256);
