@@ -1,5 +1,3 @@
-// controllers/BlockedWebsiteController.ts
-
 import { Request, Response } from "express";
 import { BlockedWebsiteService } from "../services/BlockedWebsiteService";
 
