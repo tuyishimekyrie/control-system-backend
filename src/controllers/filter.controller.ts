@@ -12,11 +12,11 @@ export const filterController = async (req: Request, res: Response) => {
     // Structure the data by categories
     const responseData = categories.map((category) => {
       const categoryKeywords = keywords
-        .filter((keyword) => keyword.id === category.id)
+        .filter((keyword) => keyword.categoryId === category.id)
         .map((keyword) => keyword.keyword);
 
       const categoryURLs = blockedURLs
-        .filter((urlFilter) => urlFilter.id === category.id)
+        .filter((urlFilter) => urlFilter.categoryId === category.id)
         .map((urlFilter) => urlFilter.url);
 
       return {

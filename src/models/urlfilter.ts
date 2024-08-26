@@ -6,5 +6,7 @@ export const URLFilter = mysqlTable("URLFilter", {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   url: varchar("name", { length: 256 }).notNull().unique(),
-  categoryId: serial("categoryId").references(() => Category.id),
+  categoryId: varchar("categoryId", { length: 256 }).references(
+    () => Category.id,
+  ),
 });

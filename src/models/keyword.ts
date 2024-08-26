@@ -1,4 +1,4 @@
-import { mysqlTable, serial, text, varchar } from "drizzle-orm/mysql-core";
+import { mysqlTable, varchar } from "drizzle-orm/mysql-core";
 import { Category } from "./category";
 
 export const Keyword = mysqlTable("Keyword", {
@@ -6,5 +6,7 @@ export const Keyword = mysqlTable("Keyword", {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   keyword: varchar("name", { length: 256 }).notNull().unique(),
-  categoryId: serial("categoryId").references(() => Category.id),
+  categoryId: varchar("categoryId", { length: 256 }).references(
+    () => Category.id,
+  ),
 });

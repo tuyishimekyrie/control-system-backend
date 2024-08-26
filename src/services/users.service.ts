@@ -32,6 +32,24 @@ export class UserService {
       throw error;
     }
   }
+  public async getUserByEmail(email: string): Promise<UserType> {
+    try {
+      const user = await (await dbObj)
+        .select()
+        .from(users)
+        .where(eq(users.email, email))
+        .limit(1);
+
+      if (user.length === 0) {
+        throw new Error("User not found");
+      }
+
+      return user[0];
+    } catch (error: any) {
+      console.error(`Error fetching user by Email: ${error.message}`);
+      throw error;
+    }
+  }
 
   public async updateUser(id: string, updatedData: UpdateUserData) {
     try {
