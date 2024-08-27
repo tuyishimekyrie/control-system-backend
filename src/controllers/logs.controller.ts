@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import { ZodError } from "zod";
 import { LogService } from "../services/logs.service";
 import { z } from "zod";
+import { dbObj } from "../../drizzle/db";
+import { blockedWebsites } from "../models/Blocked";
+import { EventName, myEmitter } from "../utils/nodeEvents";
 
 const LogSchema = z.object({
   name: z.string(),
@@ -13,39 +16,42 @@ const LogSchema = z.object({
 
 const logService = new LogService();
 
-export const logUserActivityController = async (
-  req: Request,
-  res: Response,
-) => {
+export const logUserActivityController = async (req: Request, res: Response) => {
   try {
-    console.log("Received data:", req.body);
-
     const parseSchema = LogSchema.safeParse(req.body);
     if (!parseSchema.success) {
-      console.log("Validation failed:", parseSchema.error.errors);
       return res.status(400).json({
         message: "Validation failed",
         errors: parseSchema.error.errors,
       });
     }
 
-    const { name, email, url, duration } = req.body;
+    const { name, email, url, duration } = parseSchema.data;
+    
+    const blockedWebsite = await (await dbObj).select().from(blockedWebsites)
+  .where({ url: url } as any);
+if (blockedWebsite) { 
+  myEmitter.emit(EventName.ACCESS_BLOCKED_WEBSITES, email);
+}
 
+    // Log user activity regardless of whether the URL is blocked
     await logService.logUserActivity(name, email, url, duration);
     res.status(201).send("User activity logged successfully");
+    
   } catch (error) {
     if (error instanceof ZodError) {
-      res.status(400).json({
+      return res.status(400).json({
         message: "Invalid data",
         errors: error.errors,
       });
     } else if (error instanceof Error) {
-      res.status(500).send(`Internal Server Error: ${error.message}`);
+      return res.status(500).send(`Internal Server Error: ${error.message}`);
     } else {
-      res.status(500).send("Internal Server Error");
+      return res.status(500).send("Internal Server Error");
     }
   }
 };
+
 
 export const getAllLogsController = async (req: Request, res: Response) => {
   try {
