@@ -1,8 +1,8 @@
 import { eq } from "drizzle-orm";
 import { dbObj } from "../../drizzle/db";
 import { users } from "../models/User";
-import { organizations } from "../models/organizations";
 import bcrypt from "bcryptjs";
+import { organizations } from "../models/organizations";
 
 export class UserService {
   static getUserByEmail(email: string) {
@@ -12,41 +12,38 @@ export class UserService {
     return bcrypt.hash(password, 10);
   }
 
-  public async registerUser(
-    name: string,
+  public async registerDevice(
+    deviceName: string,
+    ipAddress: string,
     email: string,
-    image: string | null,
     password: string,
-    role: "user" | "manager" | "admin",
-    organizationId?: string,
+    organizationId: string,
   ): Promise<void> {
     try {
       const hashedPassword = await this.hashPassword(password);
 
       await (await dbObj).insert(users).values({
-        name,
+        name: deviceName,
+        ipAddress,
         email,
-        image,
         password: hashedPassword,
-        role,
-        organizationId: role === "admin" ? null : organizationId,
+        role: "user",
+        organizationId,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
 
-      console.log("User registered successfully");
+      console.log("Device registered successfully");
     } catch (error: any) {
-      console.error(`Error registering user: ${error.message}`);
+      console.error(`Error registering device: ${error.message}`);
       throw error;
     }
   }
 
   public async registerOrganizationAndManager(
     orgName: string,
-    managerName: string,
     email: string,
     password: string,
-    image: string | null,
   ): Promise<void> {
     try {
       let organization = await (await dbObj)
@@ -69,19 +66,20 @@ export class UserService {
         });
       }
 
-      await this.registerUser(
-        managerName,
+      await (await dbObj).insert(users).values({
+        name: orgName,
         email,
-        image,
-        password,
-        "manager",
-        orgId,
-      );
+        password: await this.hashPassword(password),
+        role: "manager",
+        organizationId: orgId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
 
-      console.log("Your Organizatiion is successfully registered");
+      console.log("Organization and manager registered successfully");
     } catch (error: any) {
       console.error(
-        `An Error occured while registering your organization: ${error.message}`,
+        `An error occurred while registering your organization: ${error.message}`,
       );
       throw error;
     }

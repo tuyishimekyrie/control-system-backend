@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, or } from "drizzle-orm";
 import { Request, Response } from "express";
 import { ZodError } from "zod";
 import { dbObj } from "../../drizzle/db";
@@ -78,6 +78,7 @@ export const loginController = async (req: Request, res: Response) => {
           email: dbUser.email,
           name: dbUser.name,
           role: dbUser.role,
+          organizationId: dbUser.organizationId,
         },
       });
     } else {

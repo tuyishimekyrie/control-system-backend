@@ -1,12 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-<<<<<<< HEAD
-  "id": "4d0a58c0-1b6c-44d6-ad08-9d6144beb2c7",
-=======
-  "id": "ed8bdece-9e4d-4c37-830a-debe66a0db0d",
->>>>>>> b993378 (ft(Registration): Allowing managers to be the ones to register their users)
-  "prevId": "b23bd9ee-4c41-4796-a47f-088a2fdc17e0",
+  "id": "1816b1ee-9cd6-4afc-b793-cc79ee1f034e",
+  "prevId": "ed8bdece-9e4d-4c37-830a-debe66a0db0d",
   "tables": {
     "blockedWebsite": {
       "name": "blockedWebsite",
@@ -59,10 +55,8 @@
       },
       "uniqueConstraints": {}
     },
-<<<<<<< HEAD
-=======
-    "users": {
-      "name": "users",
+    "user": {
+      "name": "user",
       "columns": {
         "id": {
           "name": "id",
@@ -137,9 +131,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "users_organizationId_organizations_id_fk": {
-          "name": "users_organizationId_organizations_id_fk",
-          "tableFrom": "users",
+        "user_organizationId_organizations_id_fk": {
+          "name": "user_organizationId_organizations_id_fk",
+          "tableFrom": "user",
           "tableTo": "organizations",
           "columnsFrom": [
             "organizationId"
@@ -152,8 +146,8 @@
         }
       },
       "compositePrimaryKeys": {
-        "users_id": {
-          "name": "users_id",
+        "user_id": {
+          "name": "user_id",
           "columns": [
             "id"
           ]
@@ -161,7 +155,6 @@
       },
       "uniqueConstraints": {}
     },
->>>>>>> b993378 (ft(Registration): Allowing managers to be the ones to register their users)
     "Category": {
       "name": "Category",
       "columns": {
@@ -207,109 +200,6 @@
         }
       }
     },
-<<<<<<< HEAD
-    "user": {
-      "name": "user",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar(256)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "email": {
-          "name": "email",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "image": {
-          "name": "image",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "password": {
-          "name": "password",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "role": {
-          "name": "role",
-          "type": "enum('user','manager','admin')",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "organizationId": {
-          "name": "organizationId",
-          "type": "varchar(256)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "isSubscribed": {
-          "name": "isSubscribed",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "updatedAt": {
-          "name": "updatedAt",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "user_organizationId_organizations_id_fk": {
-          "name": "user_organizationId_organizations_id_fk",
-          "tableFrom": "user",
-          "tableTo": "organizations",
-          "columnsFrom": [
-            "organizationId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "user_id": {
-          "name": "user_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
-      "uniqueConstraints": {}
-    },
-=======
->>>>>>> b993378 (ft(Registration): Allowing managers to be the ones to register their users)
     "Keyword": {
       "name": "Keyword",
       "columns": {
@@ -484,81 +374,6 @@
       },
       "uniqueConstraints": {}
     },
-<<<<<<< HEAD
-    "notifications": {
-      "name": "notifications",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar(256)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "message": {
-          "name": "message",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "unread": {
-          "name": "unread",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "userId": {
-          "name": "userId",
-          "type": "varchar(256)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "updatedAt": {
-          "name": "updatedAt",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "notifications_userId_user_id_fk": {
-          "name": "notifications_userId_user_id_fk",
-          "tableFrom": "notifications",
-          "tableTo": "user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "notifications_id": {
-          "name": "notifications_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
-      "uniqueConstraints": {}
-    },
-=======
->>>>>>> b993378 (ft(Registration): Allowing managers to be the ones to register their users)
     "organizations": {
       "name": "organizations",
       "columns": {

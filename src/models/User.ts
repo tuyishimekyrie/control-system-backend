@@ -15,8 +15,9 @@ export const users = mysqlTable("user", {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   name: text("name"),
-  email: text("email"),
   image: text("image"),
+  ipAddress: varchar("ipAddress", { length: 45 }),
+  email: text("email"),
   password: text("password"),
   role: UserRole,
   organizationId: varchar("organizationId", { length: 256 }).references(

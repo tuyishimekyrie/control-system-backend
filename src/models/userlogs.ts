@@ -6,6 +6,7 @@ export const userLogs = mysqlTable("Logs", {
     .$defaultFn(() => crypto.randomUUID()),
   name: text("name"),
   email: text("email"),
+  organizationId: varchar("organizationId", { length: 256 }),
   url: text("url"),
   duration: time("duration"),
   date: date("date").$default(() => new Date()),

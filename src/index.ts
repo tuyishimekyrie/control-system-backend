@@ -9,6 +9,8 @@ import router from "./routes";
 import { logger } from "./utils/Logger";
 import { BlockedWebsiteService } from "./services/BlockedWebsiteService";
 import { myEventListener } from "./utils/notificationsListener";
+import appInfo from "./utils/appInfo";
+import getInstalledApplications from "./utils/appInfo";
 
 dotenv.config();
 
