@@ -10,7 +10,6 @@ import { logger } from "./utils/Logger";
 import { BlockedWebsiteService } from "./services/BlockedWebsiteService";
 import { myEventListener } from "./utils/notificationsListener";
 
-
 dotenv.config();
 
 const app = express();
