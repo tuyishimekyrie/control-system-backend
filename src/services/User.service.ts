@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 
 export class UserService {
   static getUserByEmail(email: string) {
-      throw new Error("Method not implemented.");
+    throw new Error("Method not implemented.");
   }
   private async hashPassword(password: string): Promise<string> {
     return bcrypt.hash(password, 10);
@@ -86,5 +86,4 @@ export class UserService {
       throw error;
     }
   }
-  
 }

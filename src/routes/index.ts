@@ -36,7 +36,7 @@ const routers: Router[] = [
   blockRouter,
   subscriptionRoute,
   orgsRoute,
-  notificationsRoutes
+  notificationsRoutes,
 ];
 
 router.use("/api/v1", routers);

@@ -16,7 +16,10 @@ const LogSchema = z.object({
 
 const logService = new LogService();
 
-export const logUserActivityController = async (req: Request, res: Response) => {
+export const logUserActivityController = async (
+  req: Request,
+  res: Response,
+) => {
   try {
     const parseSchema = LogSchema.safeParse(req.body);
     if (!parseSchema.success) {
@@ -27,17 +30,20 @@ export const logUserActivityController = async (req: Request, res: Response) => 
     }
 
     const { name, email, url, duration } = parseSchema.data;
-    
-    const blockedWebsite = await (await dbObj).select().from(blockedWebsites)
-  .where({ url: url } as any);
-if (blockedWebsite) { 
-  myEmitter.emit(EventName.ACCESS_BLOCKED_WEBSITES, email);
-}
+
+    const blockedWebsite = await (
+      await dbObj
+    )
+      .select()
+      .from(blockedWebsites)
+      .where({ url: url } as any);
+    if (blockedWebsite) {
+      myEmitter.emit(EventName.ACCESS_BLOCKED_WEBSITES, email);
+    }
 
     // Log user activity regardless of whether the URL is blocked
     await logService.logUserActivity(name, email, url, duration);
     res.status(201).send("User activity logged successfully");
-    
   } catch (error) {
     if (error instanceof ZodError) {
       return res.status(400).json({
@@ -51,7 +57,6 @@ if (blockedWebsite) {
     }
   }
 };
-
 
 export const getAllLogsController = async (req: Request, res: Response) => {
   try {
