@@ -4,14 +4,10 @@ import { users } from "../models";
 import { dbObj } from "../../drizzle/db";
 import { eq } from "drizzle-orm";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
+const JWT_SECRET = process.env.JWT_SECRET!;
 
-interface CustomRequest extends Request {
-  user?: {
-    email: string;
-    name: string;
-    role: string;
-  };
+export interface CustomRequest extends Request {
+  user?: any;
 }
 
 export const authenticateMiddleware = async (
@@ -29,10 +25,7 @@ export const authenticateMiddleware = async (
     }
 
     // Verify token
-    const decoded = jwt.verify(token, JWT_SECRET) as {
-      email: string;
-      name: string;
-    };
+    const decoded: any = jwt.verify(token, JWT_SECRET);
 
     // Fetch user from database
     const usersResult = await (await dbObj)
@@ -48,11 +41,7 @@ export const authenticateMiddleware = async (
     }
 
     // Attach user info to request
-    req.user = {
-      email: dbUser.email!,
-      name: dbUser.name!,
-      role: dbUser.role!, // Assuming `role` field exists
-    };
+    req.user = dbUser;
 
     next();
   } catch (error) {

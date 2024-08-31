@@ -1,26 +1,39 @@
 import { dbObj } from "../../drizzle/db";
 import { users, NewUser, UserType } from "../models/User";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 
 type UpdateUserData = Partial<Omit<NewUser, "createdAt">>;
 
 export class UserService {
-  public async getAllUsers(): Promise<UserType[]> {
+  public async getAllUsers(organizationId?: string): Promise<UserType[]> {
     try {
-      return await (await dbObj).select().from(users);
+      const query = (await dbObj).select().from(users);
+      if (organizationId) {
+        query.where(eq(users.organizationId, organizationId));
+      }
+      return await query;
     } catch (error: any) {
       console.error(`Error fetching users: ${error.message}`);
       throw error;
     }
   }
 
-  public async getUserById(id: string): Promise<UserType> {
+  public async getUserById(
+    id: string,
+    organizationId?: string,
+  ): Promise<UserType> {
     try {
-      const user = await (await dbObj)
-        .select()
-        .from(users)
-        .where(eq(users.id, id))
-        .limit(1);
+      const query = (await dbObj).select().from(users);
+
+      if (organizationId) {
+        query.where(
+          and(eq(users.id, id), eq(users.organizationId, organizationId)),
+        );
+      } else {
+        query.where(eq(users.id, id));
+      }
+
+      const user = await query.limit(1);
 
       if (user.length === 0) {
         throw new Error("User not found");
@@ -32,13 +45,23 @@ export class UserService {
       throw error;
     }
   }
-  public async getUserByEmail(email: string): Promise<UserType> {
+
+  public async getUserByEmail(
+    email: string,
+    organizationId?: string,
+  ): Promise<UserType> {
     try {
-      const user = await (await dbObj)
-        .select()
-        .from(users)
-        .where(eq(users.email, email))
-        .limit(1);
+      const query = (await dbObj).select().from(users);
+
+      if (organizationId) {
+        query.where(
+          and(eq(users.email, email), eq(users.organizationId, organizationId)),
+        );
+      } else {
+        query.where(eq(users.email, email));
+      }
+
+      const user = await query.limit(1);
 
       if (user.length === 0) {
         throw new Error("User not found");
@@ -51,17 +74,26 @@ export class UserService {
     }
   }
 
-  public async updateUser(id: string, updatedData: UpdateUserData) {
+  public async updateUser(
+    id: string,
+    updatedData: UpdateUserData,
+    organizationId?: string,
+  ) {
     try {
-      const result = await (
-        await dbObj
-      )
-        .update(users)
-        .set({
-          ...updatedData,
-          updatedAt: new Date(),
-        })
-        .where(eq(users.id, id));
+      const query = (await dbObj).update(users).set({
+        ...updatedData,
+        updatedAt: new Date(),
+      });
+
+      if (organizationId) {
+        query.where(
+          and(eq(users.id, id), eq(users.organizationId, organizationId)),
+        );
+      } else {
+        query.where(eq(users.id, id));
+      }
+
+      await query;
       console.log(`User with ID ${id} updated successfully`);
     } catch (error: any) {
       console.error(`Error updating user: ${error.message}`);
@@ -69,9 +101,19 @@ export class UserService {
     }
   }
 
-  public async deleteUserById(id: string) {
+  public async deleteUserById(id: string, organizationId?: string) {
     try {
-      const result = await (await dbObj).delete(users).where(eq(users.id, id));
+      const query = (await dbObj).delete(users);
+
+      if (organizationId) {
+        query.where(
+          and(eq(users.id, id), eq(users.organizationId, organizationId)),
+        );
+      } else {
+        query.where(eq(users.id, id));
+      }
+
+      await query;
       console.log(`User with ID ${id} deleted successfully`);
     } catch (error: any) {
       console.error(`Error deleting user by ID: ${error.message}`);
@@ -79,9 +121,15 @@ export class UserService {
     }
   }
 
-  public async deleteAllUsers() {
+  public async deleteAllUsers(organizationId?: string) {
     try {
-      await (await dbObj).delete(users);
+      const query = (await dbObj).delete(users);
+
+      if (organizationId) {
+        query.where(eq(users.organizationId, organizationId));
+      }
+
+      await query;
       console.log("All users deleted successfully");
     } catch (error: any) {
       console.error(`Error deleting all users: ${error.message}`);

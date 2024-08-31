@@ -1,7 +1,8 @@
 import { dbObj } from "../../drizzle/db";
 import { userLogs } from "../models/userlogs";
-import { eq, sum } from "drizzle-orm";
+import { eq, sum, and } from "drizzle-orm";
 import { getBaseDomain } from "../utils/ParsingUrl";
+import { users } from "../models";
 
 export class LogService {
   public async logUserActivity(
@@ -9,8 +10,20 @@ export class LogService {
     email: string,
     url: string,
     duration: number,
+    organizationId?: string | null,
   ): Promise<void> {
     try {
+      if (!organizationId) {
+        const user = await (await dbObj)
+          .select()
+          .from(users)
+          .where(eq(users.email, email));
+        if (user.length === 0) {
+          throw new Error(`User with email ${email} not found`);
+        }
+        organizationId = user[0].organizationId ?? undefined;
+      }
+
       const hours = Math.floor(duration / 3600);
       const minutes = Math.floor((duration % 3600) / 60);
       const seconds = Math.floor(duration % 60);
@@ -22,6 +35,7 @@ export class LogService {
         name,
         email,
         url,
+        organizationId,
         duration: timeValue,
         date: new Date(),
       });
@@ -33,29 +47,43 @@ export class LogService {
     }
   }
 
-  public async getAllLogs() {
+  public async getAllLogs(organizationId?: string): Promise<any[]> {
     try {
-      return await (await dbObj).select().from(userLogs);
+      const query = (await dbObj).select().from(userLogs);
+      if (organizationId) {
+        query.where(eq(userLogs.organizationId, organizationId));
+      }
+      return await query;
     } catch (error: any) {
       console.error(`Error fetching logs: ${error.message}`);
       throw error;
     }
   }
 
-  public async deleteAllLogs() {
+  public async deleteAllLogs(organizationId?: string): Promise<void> {
     try {
-      await (await dbObj).delete(userLogs);
+      const query = (await dbObj).delete(userLogs);
+      if (organizationId) {
+        query.where(eq(userLogs.organizationId, organizationId));
+      }
+      await query;
       console.log("All logs deleted successfully");
     } catch (error: any) {
       console.error(`Error deleting all logs: ${error.message}`);
       throw error;
     }
   }
-  public async getTotalTimeSpentPerWebsite() {
+
+  public async getTotalTimeSpentPerWebsite(organizationId?: string) {
     try {
       const database = await dbObj;
 
-      const logs = await database.select().from(userLogs);
+      const query = database.select().from(userLogs);
+      if (organizationId) {
+        query.where(eq(userLogs.organizationId, organizationId));
+      }
+
+      const logs = await query;
 
       const aggregatedData = logs.reduce((acc: any, log: any) => {
         const baseDomain = getBaseDomain(log.url);

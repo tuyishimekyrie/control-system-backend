@@ -169,6 +169,20 @@
       "when": 1724683149263,
       "tag": "0031_kind_warlock",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "5",
+      "when": 1724756831904,
+      "tag": "0031_slimy_professor_monster",
+      "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "5",
+      "when": 1724757061837,
+      "tag": "0032_dear_quasar",
+      "breakpoints": true
     }
   ]
 }
