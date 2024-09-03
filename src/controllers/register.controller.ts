@@ -30,8 +30,17 @@ export const registerController = async (req: Request, res: Response) => {
       });
     }
 
-    const { email, password, role, isOrganization, organizationId, orgName } =
-      body;
+    const {
+      email,
+      password,
+      role,
+      isOrganization,
+      organizationId,
+      orgName,
+      macAddress,
+    } = body;
+
+    console.log("body:", body);
 
     const userAgent = req.headers["user-agent"] || "";
     console.log(`User-Agent: ${userAgent}`);
@@ -57,7 +66,7 @@ export const registerController = async (req: Request, res: Response) => {
         );
         return res
           .status(201)
-          .send("Organization and manager registered successfully");
+          .json({ message: "Organization registered successfully" });
       } else {
         return res.status(400).json({
           message: "Invalid role for organization registration",
@@ -76,14 +85,34 @@ export const registerController = async (req: Request, res: Response) => {
         .from(users)
         .where(eq(users.organizationId, organizationId))
         .where(eq(users.email, email))
+        .where(eq(users.macAddress, macAddress))
         .limit(1);
 
-      if (usersResult.length > 0) {
-        return res
-          .status(400)
-          .send(
-            `Device with email ${email} already exists under this organization`,
-          );
+      const userExists = usersResult.length > 0;
+      const emailExists = usersResult.some(
+        (user: { email: any }) => user.email === email,
+      );
+      const macAddressExists = usersResult.some(
+        (user: { macAddress: any }) => user.macAddress === macAddress,
+      );
+
+      if (userExists) {
+        if (emailExists && macAddressExists) {
+          return res.status(400).json({
+            message:
+              "User with this email and MAC address already exists under this organization",
+          });
+        } else if (emailExists) {
+          return res.status(400).json({
+            message:
+              "User with this email already exists under this organization",
+          });
+        } else if (macAddressExists) {
+          return res.status(400).json({
+            message:
+              "Device with this MAC address already exists under this organization",
+          });
+        }
       }
 
       if (!ipAddress) {
@@ -92,9 +121,18 @@ export const registerController = async (req: Request, res: Response) => {
         });
       }
 
+      if (!macAddress) {
+        return res.status(400).json({
+          message: "MAC Address is required for user (device) registration",
+        });
+      } else {
+        console.log("MAC Address: ", macAddress);
+      }
+
       await userService.registerDevice(
         deviceName,
         ipAddress,
+        macAddress,
         email,
         password,
         organizationId,

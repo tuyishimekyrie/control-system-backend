@@ -8,6 +8,10 @@ export const UserSchema = z.object({
   role: z.enum(["user", "manager", "admin"]).optional().default("user"),
   organizationId: z.string().optional(),
   isOrganization: z.boolean().optional().default(false),
+  macAddress: z
+    .string()
+    .regex(/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/, "Invalid MAC Address")
+    .optional(),
 });
 
 export const loginSchema = z.object({

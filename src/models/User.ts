@@ -17,6 +17,7 @@ export const users = mysqlTable("user", {
   name: text("name"),
   image: text("image"),
   ipAddress: varchar("ipAddress", { length: 45 }),
+  macAddress: varchar("macAddress", { length: 45 }),
   email: text("email"),
   password: text("password"),
   role: UserRole,
