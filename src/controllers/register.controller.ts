@@ -84,8 +84,6 @@ export const registerController = async (req: Request, res: Response) => {
       const usersResult = await ((await dbObj).select() as any)
         .from(users)
         .where(eq(users.organizationId, organizationId))
-        .where(eq(users.email, email))
-        .where(eq(users.macAddress, macAddress))
         .limit(1);
 
       const userExists = usersResult.length > 0;
