@@ -15,6 +15,7 @@ export class UserService {
   public async registerDevice(
     deviceName: string,
     ipAddress: string,
+    macAddress: string,
     email: string,
     password: string,
     organizationId: string,
@@ -25,6 +26,7 @@ export class UserService {
       await (await dbObj).insert(users).values({
         name: deviceName,
         ipAddress,
+        macAddress,
         email,
         password: hashedPassword,
         role: "user",
