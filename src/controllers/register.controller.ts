@@ -83,10 +83,8 @@ export const registerController = async (req: Request, res: Response) => {
 
       const usersResult = await ((await dbObj).select() as any)
         .from(users)
-        .where(eq(users.organizationId, organizationId))
-        .limit(1);
+        .where(eq(users.organizationId, organizationId));
 
-      const userExists = usersResult.length > 0;
       const emailExists = usersResult.some(
         (user: { email: any }) => user.email === email,
       );
@@ -94,23 +92,21 @@ export const registerController = async (req: Request, res: Response) => {
         (user: { macAddress: any }) => user.macAddress === macAddress,
       );
 
-      if (userExists) {
-        if (emailExists && macAddressExists) {
-          return res.status(400).json({
-            message:
-              "User with this email and MAC address already exists under this organization",
-          });
-        } else if (emailExists) {
-          return res.status(400).json({
-            message:
-              "User with this email already exists under this organization",
-          });
-        } else if (macAddressExists) {
-          return res.status(400).json({
-            message:
-              "Device with this MAC address already exists under this organization",
-          });
-        }
+      if (emailExists && macAddressExists) {
+        return res.status(400).json({
+          message:
+            "User with this email and MAC address already exists under this organization",
+        });
+      } else if (emailExists) {
+        return res.status(400).json({
+          message:
+            "User with this email already exists under this organization",
+        });
+      } else if (macAddressExists) {
+        return res.status(400).json({
+          message:
+            "Device with this MAC address already exists under this organization",
+        });
       }
 
       if (!ipAddress) {
