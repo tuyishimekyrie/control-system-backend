@@ -1,9 +1,60 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "9e5150eb-1bd7-4009-96ed-9c627385d436",
+  "id": "f9d51fea-183c-40dd-a247-fefca8e6da21",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
+    "blockedWebsite": {
+      "name": "blockedWebsite",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "blockedWebsite_id": {
+          "name": "blockedWebsite_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
     "Category": {
       "name": "Category",
       "columns": {
@@ -66,15 +117,29 @@
           "notNull": false,
           "autoincrement": false
         },
-        "email": {
-          "name": "email",
+        "image": {
+          "name": "image",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "image": {
-          "name": "image",
+        "ipAddress": {
+          "name": "ipAddress",
+          "type": "varchar(45)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "macAddress": {
+          "name": "macAddress",
+          "type": "varchar(45)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
@@ -89,7 +154,21 @@
         },
         "role": {
           "name": "role",
-          "type": "enum('user','manager')",
+          "type": "enum('user','manager','admin')",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "organizationId": {
+          "name": "organizationId",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "isSubscribed": {
+          "name": "isSubscribed",
+          "type": "boolean",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -110,7 +189,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "user_organizationId_organizations_id_fk": {
+          "name": "user_organizationId_organizations_id_fk",
+          "tableFrom": "user",
+          "tableTo": "organizations",
+          "columnsFrom": [
+            "organizationId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {
         "user_id": {
           "name": "user_id",
@@ -137,10 +230,31 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "categoryId": {
+          "name": "categoryId",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "Keyword_categoryId_Category_id_fk": {
+          "name": "Keyword_categoryId_Category_id_fk",
+          "tableFrom": "Keyword",
+          "tableTo": "Category",
+          "columnsFrom": [
+            "categoryId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {
         "Keyword_id": {
           "name": "Keyword_id",
@@ -174,10 +288,31 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "categoryId": {
+          "name": "categoryId",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "URLFilter_categoryId_Category_id_fk": {
+          "name": "URLFilter_categoryId_Category_id_fk",
+          "tableFrom": "URLFilter",
+          "tableTo": "Category",
+          "columnsFrom": [
+            "categoryId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {
         "URLFilter_id": {
           "name": "URLFilter_id",
@@ -219,6 +354,13 @@
           "notNull": false,
           "autoincrement": false
         },
+        "organizationId": {
+          "name": "organizationId",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "url": {
           "name": "url",
           "type": "text",
@@ -253,52 +395,128 @@
       },
       "uniqueConstraints": {}
     },
-    "UserSettings": {
-      "name": "UserSettings",
+    "notifications": {
+      "name": "notifications",
       "columns": {
-        "ipAddress": {
-          "name": "ipAddress",
-          "type": "varchar(45)",
+        "id": {
+          "name": "id",
+          "type": "varchar(256)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "keywords": {
-          "name": "keywords",
-          "type": "json",
+        "message": {
+          "name": "message",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false,
-          "default": "('[]')"
+          "autoincrement": false
         },
-        "categories": {
-          "name": "categories",
-          "type": "json",
+        "unread": {
+          "name": "unread",
+          "type": "boolean",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false,
-          "default": "('[]')"
+          "autoincrement": false
         },
-        "blockedURLs": {
-          "name": "blockedURLs",
-          "type": "json",
+        "userId": {
+          "name": "userId",
+          "type": "varchar(256)",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false,
-          "default": "('[]')"
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "notifications_userId_user_id_fk": {
+          "name": "notifications_userId_user_id_fk",
+          "tableFrom": "notifications",
+          "tableTo": "user",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "notifications_id": {
+          "name": "notifications_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "organizations": {
+      "name": "organizations",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "UserSettings_ipAddress": {
-          "name": "UserSettings_ipAddress",
+        "organizations_id": {
+          "name": "organizations_id",
           "columns": [
-            "ipAddress"
+            "id"
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "organizations_name_unique": {
+          "name": "organizations_name_unique",
+          "columns": [
+            "name"
+          ]
+        }
+      }
     }
   },
   "_meta": {
