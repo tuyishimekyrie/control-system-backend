@@ -56,7 +56,9 @@ export const getLocation = async (req: Request, res: Response) => {
     // Check if location data exists for the user
     const location = locationStore[userId];
     if (!location) {
-      return res.status(404).json({ message: "Location not found for the user." });
+      return res
+        .status(404)
+        .json({ message: "Location not found for the user." });
     }
 
     // Return the location data
@@ -110,7 +112,5 @@ export const getAllLocations = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
-
-
 
 export default userLocationController;
