@@ -1,1 +1,0 @@
-ALTER TABLE `organizations` MODIFY COLUMN `name` varchar(255);

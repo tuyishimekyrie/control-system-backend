@@ -1,1 +1,0 @@
-ALTER TABLE `URLFilter` MODIFY COLUMN `categoryId` varchar(256);

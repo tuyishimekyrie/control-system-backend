@@ -15,6 +15,7 @@ import subscriptionRoute from "./subscription.route";
 import userRoute from "./users.route";
 import orgsRoute from "./organization.route";
 import notificationsRoutes from "./notifications.route";
+import userLocationRouter from "./userLocation.route";
 
 const app = express();
 
@@ -37,6 +38,7 @@ const routers: Router[] = [
   subscriptionRoute,
   orgsRoute,
   notificationsRoutes,
+  userLocationRouter
 ];
 
 router.use("/api/v1", routers);
