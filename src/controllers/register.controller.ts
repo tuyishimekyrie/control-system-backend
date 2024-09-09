@@ -6,6 +6,7 @@ import { users } from "../models";
 import { UserService } from "../services";
 import { UserSchema } from "../validations";
 import DeviceDetector = require("device-detector-js");
+import { organizations } from "../models/organizations";
 
 const userService = new UserService();
 
@@ -121,6 +122,17 @@ export const registerController = async (req: Request, res: Response) => {
         });
       } else {
         console.log("MAC Address: ", macAddress);
+      }
+
+      const organizationResult = await ((await dbObj).select() as any)
+        .from(organizations)
+        .where(eq(organizations.id, organizationId));
+
+      if (usersResult.length >= organizationResult[0].maxUsers) {
+        return res.status(400).json({
+          message:
+            "You have reached the allowed number of users for this organization",
+        });
       }
 
       await userService.registerDevice(

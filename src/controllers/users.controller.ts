@@ -120,7 +120,7 @@ export const updateUserController = async (req: Request, res: Response) => {
         ? (userInfo.organizationId ?? undefined)
         : undefined,
     );
-    res.status(200).send(`User with ID ${id} updated successfully`);
+    res.status(200).json({ message: "User updated successfully" });
   } catch (error: any) {
     res.status(404).send(`User not found: ${error.message}`);
   }
@@ -138,7 +138,7 @@ export const deleteUserByIdController = async (req: Request, res: Response) => {
         ? (userInfo.organizationId ?? undefined)
         : undefined,
     );
-    res.status(200).send(`User with ID ${id} deleted successfully`);
+    res.status(200).json({ message: "user deleted successfully" });
   } catch (error: any) {
     res.status(404).send(`User not found: ${error.message}`);
   }
@@ -154,7 +154,7 @@ export const deleteAllUsersController = async (req: Request, res: Response) => {
         ? (userInfo.organizationId ?? undefined)
         : undefined,
     );
-    res.status(200).send("All users deleted successfully");
+    res.status(200).json({ message: "All users deleted successfully" });
   } catch (error: any) {
     res.status(500).send(`Internal Server Error: ${error.message}`);
   }

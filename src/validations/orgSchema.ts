@@ -7,4 +7,5 @@ export const OrganizationSchema = z.object({
 
 export const OrganizationUpdateSchema = z.object({
   name: z.string().min(1).optional(),
+  maxUsers: z.number().int().optional(),
 });

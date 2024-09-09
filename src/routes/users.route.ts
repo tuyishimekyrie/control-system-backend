@@ -14,7 +14,7 @@ const userRoute = express.Router();
 userRoute.get("/users", getAllUsersController);
 userRoute.get("/users/:id", getUserByIdController);
 userRoute.get("/user/:email", getUserByEmail);
-userRoute.put("/users/:id", updateUserController);
+userRoute.patch("/users/:id", updateUserController);
 userRoute.delete("/users/:id", deleteUserByIdController);
 userRoute.delete("/users", deleteAllUsersController);
 

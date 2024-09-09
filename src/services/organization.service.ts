@@ -31,7 +31,10 @@ export class OrganizationService {
     }
   }
 
-  public async updateOrganization(id: string, data: Partial<{ name: string }>) {
+  public async updateOrganization(
+    id: string,
+    data: Partial<{ name: string; maxUsers: number }>,
+  ) {
     try {
       const updateData = {
         ...data,
