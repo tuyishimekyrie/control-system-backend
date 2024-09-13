@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { ZodError } from "zod";
 import { dbObj } from "../../drizzle/db";
 import { users } from "../models";
-import { loginSchema } from "../validations";
+import { loginSchema, updatePasswordSchema } from "../validations";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { logger } from "../utils/Logger";
@@ -96,5 +96,87 @@ export const loginController = async (req: Request, res: Response) => {
     } else {
       res.status(500).send("Internal Server Error");
     }
+  }
+};
+
+export const updatePasswordController = async (req: Request, res: Response) => {
+  try {
+    const { email, newPassword, confirmPassword } = req.body;
+
+    const parseSchema = updatePasswordSchema.safeParse({
+      email,
+      newPassword,
+      confirmPassword,
+    });
+    if (!parseSchema.success) {
+      return res.status(400).json({
+        message: "Validation failed",
+        errors: parseSchema.error.errors,
+      });
+    }
+
+    const usersResult = await (await dbObj)
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
+
+    const dbUser = usersResult[0];
+
+    if (!dbUser) {
+      return res
+        .status(404)
+        .json({ message: `User with email ${email} wasn't found` });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await (await dbObj)
+      .update(users)
+      .set({ password: hashedPassword })
+      .where(eq(users.email, email));
+
+    res.status(200).json({
+      message: "Password updated successfully",
+    });
+  } catch (error: any) {
+    logger.error("Error in updatePasswordController: ", error);
+    if (error instanceof ZodError) {
+      res.status(400).json({
+        message: "Invalid data",
+        errors: error.errors,
+      });
+    } else if (error instanceof Error) {
+      res
+        .status(500)
+        .json({ message: `Internal Server Error: ${error.message}` });
+    } else {
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+};
+
+export const getUserByEmailController = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.params;
+
+    const usersResult = await (await dbObj)
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
+
+    const dbUser = usersResult[0];
+
+    if (!dbUser) {
+      return res
+        .status(404)
+        .json({ message: `User with email ${email} not found` });
+    }
+
+    res.status(200).json({ message: `User with email ${email} exists` });
+  } catch (error: any) {
+    logger.error("Error in getUserByEmailController: ", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };

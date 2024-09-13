@@ -18,3 +18,13 @@ export const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(3),
 });
+
+export const updatePasswordSchema = z.object({
+  email: z.string().email({ message: "Invalid email format" }),
+  newPassword: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters" }),
+  confirmPassword: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters" }),
+});
