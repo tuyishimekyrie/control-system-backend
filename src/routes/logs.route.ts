@@ -9,7 +9,7 @@ import {
 const logsRoute = express.Router();
 
 logsRoute.post("/user/logs", logUserActivityController);
-logsRoute.get("/user/logs", getAllLogsController);
+logsRoute.get("/user/logs/all", getAllLogsController);
 logsRoute.get(
   "/user/logs/total-time-per-website",
   getTotalTimeSpentPerWebsiteController,

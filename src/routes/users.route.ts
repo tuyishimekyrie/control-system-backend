@@ -7,6 +7,7 @@ import {
   deleteUserByIdController,
   deleteAllUsersController,
   getUserByEmail,
+  changeUserDeviceName,
 } from "../controllers/users.controller";
 
 const userRoute = express.Router();
@@ -17,5 +18,6 @@ userRoute.get("/user/:email", getUserByEmail);
 userRoute.patch("/users/:id", updateUserController);
 userRoute.delete("/users/:id", deleteUserByIdController);
 userRoute.delete("/users", deleteAllUsersController);
+userRoute.patch("/username/:id", changeUserDeviceName);
 
 export default userRoute;
