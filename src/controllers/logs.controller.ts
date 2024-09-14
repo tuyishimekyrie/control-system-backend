@@ -8,6 +8,7 @@ import { EventName, myEmitter } from "../utils/nodeEvents";
 import { users } from "../models";
 import { eq } from "drizzle-orm";
 import jwt from "jsonwebtoken";
+import { logger } from "../utils/Logger";
 
 const LogSchema = z.object({
   name: z.string(),
@@ -41,6 +42,7 @@ const getUserFromToken = async (
   res: Response,
 ): Promise<UserInfo | undefined> => {
   const token = req.headers.authorization?.split(" ")[1];
+  logger.info(token)
 
   if (!token) {
     res.status(403).json({ message: "Please login!" });
@@ -92,13 +94,16 @@ export const logUserActivityController = async (
       myEmitter.emit(EventName.ACCESS_BLOCKED_WEBSITES, email);
     }
 
-    const user = await (await dbObj)
+    const user = await(await dbObj)
       .select()
       .from(users)
       .where(eq(users.email, email));
+    logger.info(user)
+
     if (user.length === 0) {
       return res.status(404).send(`User with email ${email} not found`);
     }
+
     const organizationId = user[0].organizationId;
 
     // Log user activity regardless of whether the URL is blocked
@@ -127,13 +132,16 @@ export const logUserActivityController = async (
 export const getAllLogsController = async (req: Request, res: Response) => {
   try {
     const userInfo = await getUserFromToken(req, res);
+    logger.info(userInfo)
     if (!userInfo) return;
+    logger.info(userInfo)
 
     const logs = await logService.getAllLogs(
       userInfo.role === "manager"
         ? (userInfo.organizationId ?? undefined)
         : undefined,
     );
+    logger.info(logs);
     res.status(200).json(logs);
   } catch (error: any) {
     res.status(500).send(`Internal Server Error: ${error.message}`);

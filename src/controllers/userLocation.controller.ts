@@ -112,5 +112,27 @@ export const getAllLocations = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
-
+export const getAllUserLocations = async (req: Request, res: Response) => {
+  try {
+    const data = await (
+      await dbObj
+    )
+      .select({
+        id: userLocations.id,
+        userId: userLocations.userId,
+        latitude: userLocations.latitude,
+        longitude: userLocations.longitude,
+        recordedAt: userLocations.recordedAt,
+        userName: users.name,
+      })
+      .from(userLocations)
+      .innerJoin(users, eq(userLocations.userId, users.id)) // Join with users table
+      .where(eq(users.id, userLocations.userId))
+      .execute();
+    logger.info(data);
+    res.status(200).json({ message: "Location Fetched Successfully", data });
+  } catch (error) {
+    logger.error("Failed to fetch all user locations", error);
+  }
+};
 export default userLocationController;

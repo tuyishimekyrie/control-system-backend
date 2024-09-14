@@ -4,6 +4,7 @@ import { users } from "../models";
 import { dbObj } from "../../drizzle/db";
 import { eq } from "drizzle-orm";
 import jwt from "jsonwebtoken";
+import { logger } from "../utils/Logger";
 
 interface DecodedToken {
   email: string;
@@ -157,5 +158,40 @@ export const deleteAllUsersController = async (req: Request, res: Response) => {
     res.status(200).json({ message: "All users deleted successfully" });
   } catch (error: any) {
     res.status(500).send(`Internal Server Error: ${error.message}`);
+  }
+};
+
+// Example for updating the user's name
+export const changeUserDeviceName = async (req: Request, res: Response) => {
+  try {
+    const { name } = req.body;
+    const userId = req.params.id;
+
+    if (!name) {
+      return res.status(400).json({ message: "Device name is required" });
+    }
+
+    // Update the user record in the database
+    const resp = await (
+      await dbObj
+    )
+      .update(users)
+      .set({ name }) // Ensure 'name' is a valid column in the table schema
+      .where(eq(users.id, userId)); // Assuming you are filtering by user ID
+
+    // if (resp.affectedRows === 0) {
+    //   return res
+    //     .status(404)
+    //     .json({ message: "User not found or no changes made" });
+    // }
+    logger.info(resp);
+    return res
+      .status(200)
+      .json({ message: "User device name updated successfully" });
+  } catch (error) {
+    console.error("Error updating user device name:", error);
+    return res
+      .status(500)
+      .json({ message: "Failed to update user device name" });
   }
 };
