@@ -42,7 +42,7 @@ const getUserFromToken = async (
   res: Response,
 ): Promise<UserInfo | undefined> => {
   const token = req.headers.authorization?.split(" ")[1];
-  logger.info(token)
+  logger.info(token);
 
   if (!token) {
     res.status(403).json({ message: "Please login!" });
@@ -94,11 +94,11 @@ export const logUserActivityController = async (
       myEmitter.emit(EventName.ACCESS_BLOCKED_WEBSITES, email);
     }
 
-    const user = await(await dbObj)
+    const user = await (await dbObj)
       .select()
       .from(users)
       .where(eq(users.email, email));
-    logger.info(user)
+    logger.info(user);
 
     if (user.length === 0) {
       return res.status(404).send(`User with email ${email} not found`);
@@ -132,9 +132,9 @@ export const logUserActivityController = async (
 export const getAllLogsController = async (req: Request, res: Response) => {
   try {
     const userInfo = await getUserFromToken(req, res);
-    logger.info(userInfo)
+    logger.info(userInfo);
     if (!userInfo) return;
-    logger.info(userInfo)
+    logger.info(userInfo);
 
     const logs = await logService.getAllLogs(
       userInfo.role === "manager"
