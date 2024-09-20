@@ -24,14 +24,39 @@ export class BlockedWebsiteService {
     );
   }
 
-  public async createBlockedWebsite(name: string, url: string): Promise<void> {
+  public async createBlockedWebsite(
+    name: string,
+    url: string,
+    userId: string,
+    role: string,
+  ): Promise<void> {
     try {
-      await (await dbObj).insert(blockedWebsites).values({
+      let websiteData: {
+        name: string;
+        url: string;
+        createdAt: Date;
+        updatedAt: Date;
+        organizationId?: string;
+        parentId?: string;
+        schoolId?: string;
+      } = {
         name,
         url,
         createdAt: new Date(),
         updatedAt: new Date(),
-      });
+      };
+
+      if (role === "manager") {
+        websiteData.organizationId = userId;
+      } else if (role === "school") {
+        websiteData.schoolId = userId;
+      } else if (role === "parent") {
+        websiteData.parentId = userId;
+      } else {
+        throw new Error("Invalid role");
+      }
+
+      await (await dbObj).insert(blockedWebsites).values(websiteData);
 
       await this.addHostEntry(name, url);
       console.log("Website blocked successfully");
@@ -41,9 +66,24 @@ export class BlockedWebsiteService {
     }
   }
 
-  public async getBlockedWebsites(): Promise<any[]> {
+  public async getBlockedWebsites(
+    userId: string,
+    role: string,
+  ): Promise<any[]> {
     try {
-      return await (await dbObj).select().from(blockedWebsites);
+      let query = (await dbObj).select().from(blockedWebsites);
+
+      if (role === "manager") {
+        query.where(eq(blockedWebsites.organizationId, userId));
+      } else if (role === "school") {
+        query.where(eq(blockedWebsites.schoolId, userId));
+      } else if (role === "parent") {
+        query.where(eq(blockedWebsites.parentId, userId));
+      } else {
+        throw new Error("Invalid role");
+      }
+
+      return await query;
     } catch (error: any) {
       console.error(`Error fetching blocked websites: ${error.message}`);
       throw error;
@@ -54,6 +94,8 @@ export class BlockedWebsiteService {
     id: string,
     name: string,
     url: string,
+    userId: string,
+    role: string,
   ): Promise<void> {
     try {
       const oldWebsite = await (
@@ -63,6 +105,22 @@ export class BlockedWebsiteService {
         .from(blockedWebsites)
         .where(eq(blockedWebsites.id, id))
         .then((res) => res[0]);
+
+      if (role === "manager") {
+        if (oldWebsite.organizationId !== userId) {
+          throw new Error("Unauthorized");
+        }
+      } else if (role === "school") {
+        if (oldWebsite.schoolId !== userId) {
+          throw new Error("Unauthorized");
+        }
+      } else if (role === "parent") {
+        if (oldWebsite.parentId !== userId) {
+          throw new Error("Unauthorized");
+        }
+      } else {
+        throw new Error("Invalid role");
+      }
 
       await (await dbObj)
         .update(blockedWebsites)
@@ -80,7 +138,11 @@ export class BlockedWebsiteService {
     }
   }
 
-  public async deleteBlockedWebsite(id: string): Promise<void> {
+  public async deleteBlockedWebsite(
+    id: string,
+    userId: string,
+    role: string,
+  ): Promise<void> {
     try {
       const website = await (
         await dbObj
@@ -92,6 +154,22 @@ export class BlockedWebsiteService {
 
       if (!website) {
         throw new Error("Website not found");
+      }
+
+      if (role === "manager") {
+        if (website.organizationId !== userId) {
+          throw new Error("Unauthorized");
+        }
+      } else if (role === "school") {
+        if (website.schoolId !== userId) {
+          throw new Error("Unauthorized");
+        }
+      } else if (role === "parent") {
+        if (website.parentId !== userId) {
+          throw new Error("Unauthorized");
+        }
+      } else {
+        throw new Error("Invalid role");
       }
 
       console.log(`Deleting website: ${JSON.stringify(website)}`);

@@ -7,8 +7,16 @@ import {
   varchar,
 } from "drizzle-orm/mysql-core";
 import { organizations } from "./organizations";
+import { schools } from "./schools";
+import { parents } from "./parents";
 
-export const UserRole = mysqlEnum("role", ["user", "manager", "admin"]);
+export const UserRole = mysqlEnum("role", [
+  "user",
+  "manager",
+  "parent",
+  "school",
+  "admin",
+]);
 
 export const users = mysqlTable("user", {
   id: varchar("id", { length: 256 })
@@ -25,6 +33,12 @@ export const users = mysqlTable("user", {
     () => organizations.id,
     { onDelete: "cascade" },
   ),
+  parentId: varchar("parentId", { length: 256 }).references(() => parents.id, {
+    onDelete: "cascade",
+  }),
+  schoolId: varchar("schoolId", { length: 256 }).references(() => schools.id, {
+    onDelete: "cascade",
+  }),
   isSubscribed: boolean("isSubscribed").$default(() => false),
   createdAt: timestamp("createdAt").$default(() => new Date()),
   updatedAt: timestamp("updatedAt")

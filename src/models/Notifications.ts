@@ -13,7 +13,9 @@ export const notifications = mysqlTable("notifications", {
     .$defaultFn(() => crypto.randomUUID()),
   message: text("message"),
   unread: boolean("unread").$default(() => true),
-  userId: varchar("userId", { length: 256 }).references(() => users.id),
+  userId: varchar("userId", { length: 256 }).references(() => users.id, {
+    onDelete: "cascade",
+  }),
   createdAt: timestamp("createdAt").$default(() => new Date()),
   updatedAt: timestamp("updatedAt")
     .$default(() => new Date())

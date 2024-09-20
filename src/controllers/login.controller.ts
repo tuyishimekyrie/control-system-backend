@@ -80,6 +80,8 @@ export const loginController = async (req: Request, res: Response) => {
           name: dbUser.name,
           role: dbUser.role,
           organizationId: dbUser.organizationId,
+          parentId: dbUser.parentId,
+          schoolId: dbUser.schoolId,
         },
       });
     } else {

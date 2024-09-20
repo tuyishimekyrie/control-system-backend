@@ -7,6 +7,8 @@ import { UserService } from "../services";
 import { UserSchema } from "../validations";
 import DeviceDetector = require("device-detector-js");
 import { organizations } from "../models/organizations";
+import { parents } from "../models/parents";
+import { schools } from "../models/schools";
 
 const userService = new UserService();
 
@@ -23,6 +25,7 @@ const getClientIp = (req: any) => {
 export const registerController = async (req: Request, res: Response) => {
   try {
     const body = req.body;
+    console.log("body:", body);
     const parseSchema = UserSchema.safeParse(body);
     if (!parseSchema.success) {
       return res.status(400).json({
@@ -37,11 +40,15 @@ export const registerController = async (req: Request, res: Response) => {
       role,
       isOrganization,
       organizationId,
+      isSchool,
+      schoolId,
+      isParent,
+      parentId,
       orgName,
+      schoolName,
+      parentName,
       macAddress,
     } = body;
-
-    console.log("body:", body);
 
     const userAgent = req.headers["user-agent"] || "";
     console.log(`User-Agent: ${userAgent}`);
@@ -74,17 +81,64 @@ export const registerController = async (req: Request, res: Response) => {
         });
       }
     }
+    if (isSchool) {
+      if (role === "school") {
+        if (!schoolName) {
+          return res.status(400).json({
+            message: "School name is required for school registration",
+          });
+        }
+        await userService.registerSchool(schoolName, email, password);
+        return res
+          .status(201)
+          .json({ message: "School registered successfully" });
+      } else {
+        return res.status(400).json({
+          message: "Invalid role for school registration",
+        });
+      }
+    }
+    if (isParent) {
+      if (role === "parent") {
+        if (!parentName) {
+          return res.status(400).json({
+            message: "Parent name is required for parent registration",
+          });
+        }
+        await userService.registerParent(parentName, email, password);
+        return res
+          .status(201)
+          .json({ message: "Parent registered successfully" });
+      } else {
+        return res.status(400).json({
+          message: "Invalid role for parent registration",
+        });
+      }
+    }
 
     if (role === "user") {
-      if (!organizationId) {
+      if (!organizationId && !schoolId && !parentId) {
         return res.status(400).json({
-          message: "Organization ID is required for user (device) registration",
+          message: "Entity ID is required for device registration",
         });
+      }
+
+      let entity;
+      let entityType;
+      if (organizationId) {
+        entity = organizationId;
+        entityType = organizations;
+      } else if (schoolId) {
+        entity = schoolId;
+        entityType = schools;
+      } else {
+        entity = parentId;
+        entityType = parents;
       }
 
       const usersResult = await ((await dbObj).select() as any)
         .from(users)
-        .where(eq(users.organizationId, organizationId));
+        .where(eq(users.organizationId, entity));
 
       const emailExists = usersResult.some(
         (user: { email: any }) => user.email === email,
@@ -96,17 +150,16 @@ export const registerController = async (req: Request, res: Response) => {
       if (emailExists && macAddressExists) {
         return res.status(400).json({
           message:
-            "User with this email and MAC address already exists under this organization",
+            "User with this email and MAC address already exists under this entity",
         });
       } else if (emailExists) {
         return res.status(400).json({
-          message:
-            "User with this email already exists under this organization",
+          message: "User with this email already exists under this entity",
         });
       } else if (macAddressExists) {
         return res.status(400).json({
           message:
-            "Device with this MAC address already exists under this organization",
+            "Device with this MAC address already exists under this entity",
         });
       }
 
@@ -124,14 +177,14 @@ export const registerController = async (req: Request, res: Response) => {
         console.log("MAC Address: ", macAddress);
       }
 
-      const organizationResult = await ((await dbObj).select() as any)
-        .from(organizations)
-        .where(eq(organizations.id, organizationId));
+      const entityResult = await ((await dbObj).select() as any)
+        .from(entityType)
+        .where(eq(entityType.id, entity));
 
-      if (usersResult.length >= organizationResult[0].maxUsers) {
+      if (usersResult.length >= entityResult[0].maxUsers) {
         return res.status(400).json({
           message:
-            "You have reached the allowed number of users for this organization",
+            "You have reached the allowed number of users for this entity",
         });
       }
 
@@ -141,7 +194,9 @@ export const registerController = async (req: Request, res: Response) => {
         macAddress,
         email,
         password,
-        organizationId,
+        organizationId ? organizationId : undefined,
+        schoolId ? schoolId : undefined,
+        parentId ? parentId : undefined,
       );
       return res.status(201).send("Device registered successfully");
     }

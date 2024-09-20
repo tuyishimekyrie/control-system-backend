@@ -1,6 +1,6 @@
 import { dbObj } from "../../drizzle/db";
 import { userLogs } from "../models/userlogs";
-import { eq, sum, and } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { getBaseDomain } from "../utils/ParsingUrl";
 import { users } from "../models";
 
@@ -11,6 +11,8 @@ export class LogService {
     url: string,
     duration: number,
     organizationId?: string | null,
+    parentId?: string | null,
+    schoolId?: string | null,
   ): Promise<void> {
     try {
       if (!organizationId) {
@@ -36,6 +38,8 @@ export class LogService {
         email,
         url,
         organizationId,
+        parentId,
+        schoolId,
         duration: timeValue,
         date: new Date(),
       });
@@ -47,11 +51,21 @@ export class LogService {
     }
   }
 
-  public async getAllLogs(organizationId?: string): Promise<any[]> {
+  public async getAllLogs(
+    organizationId?: string,
+    parentId?: string,
+    schoolId?: string,
+  ): Promise<any[]> {
     try {
       const query = (await dbObj).select().from(userLogs);
       if (organizationId) {
         query.where(eq(userLogs.organizationId, organizationId));
+      }
+      if (parentId) {
+        query.where(eq(userLogs.parentId, parentId));
+      }
+      if (schoolId) {
+        query.where(eq(userLogs.schoolId, schoolId));
       }
       return await query;
     } catch (error: any) {
@@ -60,11 +74,21 @@ export class LogService {
     }
   }
 
-  public async deleteAllLogs(organizationId?: string): Promise<void> {
+  public async deleteAllLogs(
+    organizationId?: string,
+    parentId?: string,
+    schoolId?: string,
+  ): Promise<void> {
     try {
       const query = (await dbObj).delete(userLogs);
       if (organizationId) {
         query.where(eq(userLogs.organizationId, organizationId));
+      }
+      if (parentId) {
+        query.where(eq(userLogs.parentId, parentId));
+      }
+      if (schoolId) {
+        query.where(eq(userLogs.schoolId, schoolId));
       }
       await query;
       console.log("All logs deleted successfully");
@@ -74,13 +98,23 @@ export class LogService {
     }
   }
 
-  public async getTotalTimeSpentPerWebsite(organizationId?: string) {
+  public async getTotalTimeSpentPerWebsite(
+    organizationId?: string,
+    parentId?: string,
+    schoolId?: string,
+  ) {
     try {
       const database = await dbObj;
 
       const query = database.select().from(userLogs);
       if (organizationId) {
         query.where(eq(userLogs.organizationId, organizationId));
+      }
+      if (parentId) {
+        query.where(eq(userLogs.parentId, parentId));
+      }
+      if (schoolId) {
+        query.where(eq(userLogs.schoolId, schoolId));
       }
 
       const logs = await query;
