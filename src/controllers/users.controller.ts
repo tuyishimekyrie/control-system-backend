@@ -15,8 +15,10 @@ interface UserInfo {
   image: string | null;
   ipAddress: string | null;
   password: string | null;
-  role: "user" | "manager" | "admin";
+  role: "user" | "manager" | "admin" | "school" | "parent";
   organizationId: string | null;
+  schoolId: string | null;
+  parentId: string | null;
   isSubscribed: boolean | null;
   createdAt: Date;
   updatedAt: Date;
@@ -60,11 +62,12 @@ export const getAllUsersController = async (req: Request, res: Response) => {
   try {
     const userInfo = await getUserFromToken(req, res);
     if (!userInfo) return;
-
     const users = await userService.getAllUsers(
       userInfo.role === "manager"
         ? (userInfo.organizationId ?? undefined)
         : undefined,
+      userInfo.role === "parent" ? (userInfo.parentId ?? undefined) : undefined,
+      userInfo.role === "school" ? (userInfo.schoolId ?? undefined) : undefined,
     );
     res.status(200).json(users);
   } catch (error: any) {
@@ -83,6 +86,8 @@ export const getUserByIdController = async (req: Request, res: Response) => {
       userInfo.role === "manager"
         ? (userInfo.organizationId ?? undefined)
         : undefined,
+      userInfo.role === "parent" ? (userInfo.parentId ?? undefined) : undefined,
+      userInfo.role === "school" ? (userInfo.schoolId ?? undefined) : undefined,
     );
     res.status(200).json(user);
   } catch (error: any) {
@@ -101,6 +106,8 @@ export const getUserByEmail = async (req: Request, res: Response) => {
       userInfo.role === "manager"
         ? (userInfo.organizationId ?? undefined)
         : undefined,
+      userInfo.role === "parent" ? (userInfo.parentId ?? undefined) : undefined,
+      userInfo.role === "school" ? (userInfo.schoolId ?? undefined) : undefined,
     );
     res.status(200).json(user);
   } catch (error: any) {
@@ -120,6 +127,8 @@ export const updateUserController = async (req: Request, res: Response) => {
       userInfo.role === "manager"
         ? (userInfo.organizationId ?? undefined)
         : undefined,
+      userInfo.role === "parent" ? (userInfo.parentId ?? undefined) : undefined,
+      userInfo.role === "school" ? (userInfo.schoolId ?? undefined) : undefined,
     );
     res.status(200).json({ message: "User updated successfully" });
   } catch (error: any) {
@@ -138,6 +147,8 @@ export const deleteUserByIdController = async (req: Request, res: Response) => {
       userInfo.role === "manager"
         ? (userInfo.organizationId ?? undefined)
         : undefined,
+      userInfo.role === "parent" ? (userInfo.parentId ?? undefined) : undefined,
+      userInfo.role === "school" ? (userInfo.schoolId ?? undefined) : undefined,
     );
     res.status(200).json({ message: "user deleted successfully" });
   } catch (error: any) {
@@ -154,6 +165,8 @@ export const deleteAllUsersController = async (req: Request, res: Response) => {
       userInfo.role === "manager"
         ? (userInfo.organizationId ?? undefined)
         : undefined,
+      userInfo.role === "parent" ? (userInfo.parentId ?? undefined) : undefined,
+      userInfo.role === "school" ? (userInfo.schoolId ?? undefined) : undefined,
     );
     res.status(200).json({ message: "All users deleted successfully" });
   } catch (error: any) {
@@ -179,11 +192,6 @@ export const changeUserDeviceName = async (req: Request, res: Response) => {
       .set({ name }) // Ensure 'name' is a valid column in the table schema
       .where(eq(users.id, userId)); // Assuming you are filtering by user ID
 
-    // if (resp.affectedRows === 0) {
-    //   return res
-    //     .status(404)
-    //     .json({ message: "User not found or no changes made" });
-    // }
     logger.info(resp);
     return res
       .status(200)

@@ -5,12 +5,22 @@ import { eq, and } from "drizzle-orm";
 type UpdateUserData = Partial<Omit<NewUser, "createdAt">>;
 
 export class UserService {
-  public async getAllUsers(organizationId?: string): Promise<UserType[]> {
+  public async getAllUsers(
+    organizationId?: string,
+    parentId?: string,
+    schoolId?: string,
+  ): Promise<UserType[]> {
     try {
       const query = (await dbObj).select().from(users);
+      console.log("usersIds:", organizationId, schoolId);
       if (organizationId) {
         query.where(eq(users.organizationId, organizationId));
+      } else if (parentId) {
+        query.where(eq(users.parentId, parentId));
+      } else if (schoolId) {
+        query.where(eq(users.schoolId, schoolId));
       }
+
       return await query;
     } catch (error: any) {
       console.error(`Error fetching users: ${error.message}`);
@@ -21,6 +31,8 @@ export class UserService {
   public async getUserById(
     id: string,
     organizationId?: string,
+    parentId?: string,
+    schoolId?: string,
   ): Promise<UserType> {
     try {
       const query = (await dbObj).select().from(users);
@@ -29,6 +41,10 @@ export class UserService {
         query.where(
           and(eq(users.id, id), eq(users.organizationId, organizationId)),
         );
+      } else if (parentId) {
+        query.where(and(eq(users.id, id), eq(users.parentId, parentId)));
+      } else if (schoolId) {
+        query.where(and(eq(users.id, id), eq(users.schoolId, schoolId)));
       } else {
         query.where(eq(users.id, id));
       }
@@ -49,6 +65,8 @@ export class UserService {
   public async getUserByEmail(
     email: string,
     organizationId?: string,
+    parentId?: string,
+    schoolId?: string,
   ): Promise<UserType> {
     try {
       const query = (await dbObj).select().from(users);
@@ -57,6 +75,10 @@ export class UserService {
         query.where(
           and(eq(users.email, email), eq(users.organizationId, organizationId)),
         );
+      } else if (parentId) {
+        query.where(and(eq(users.email, email), eq(users.parentId, parentId)));
+      } else if (schoolId) {
+        query.where(and(eq(users.email, email), eq(users.schoolId, schoolId)));
       } else {
         query.where(eq(users.email, email));
       }
@@ -78,6 +100,8 @@ export class UserService {
     id: string,
     updatedData: UpdateUserData,
     organizationId?: string,
+    parentId?: string,
+    schoolId?: string,
   ) {
     try {
       const query = (await dbObj).update(users).set({
@@ -89,6 +113,10 @@ export class UserService {
         query.where(
           and(eq(users.id, id), eq(users.organizationId, organizationId)),
         );
+      } else if (parentId) {
+        query.where(and(eq(users.id, id), eq(users.parentId, parentId)));
+      } else if (schoolId) {
+        query.where(and(eq(users.id, id), eq(users.schoolId, schoolId)));
       } else {
         query.where(eq(users.id, id));
       }
@@ -101,7 +129,12 @@ export class UserService {
     }
   }
 
-  public async deleteUserById(id: string, organizationId?: string) {
+  public async deleteUserById(
+    id: string,
+    organizationId?: string,
+    parentId?: string,
+    schoolId?: string,
+  ) {
     try {
       const query = (await dbObj).delete(users);
 
@@ -109,6 +142,10 @@ export class UserService {
         query.where(
           and(eq(users.id, id), eq(users.organizationId, organizationId)),
         );
+      } else if (parentId) {
+        query.where(and(eq(users.id, id), eq(users.parentId, parentId)));
+      } else if (schoolId) {
+        query.where(and(eq(users.id, id), eq(users.schoolId, schoolId)));
       } else {
         query.where(eq(users.id, id));
       }
@@ -121,12 +158,20 @@ export class UserService {
     }
   }
 
-  public async deleteAllUsers(organizationId?: string) {
+  public async deleteAllUsers(
+    organizationId?: string,
+    parentId?: string,
+    schoolId?: string,
+  ) {
     try {
       const query = (await dbObj).delete(users);
 
       if (organizationId) {
         query.where(eq(users.organizationId, organizationId));
+      } else if (parentId) {
+        query.where(eq(users.parentId, parentId));
+      } else if (schoolId) {
+        query.where(eq(users.schoolId, schoolId));
       }
 
       await query;

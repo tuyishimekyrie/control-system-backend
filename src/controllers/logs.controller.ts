@@ -27,11 +27,13 @@ interface UserInfo {
   image: string | null;
   ipAddress: string | null;
   password: string | null;
-  role: "user" | "manager" | "admin";
+  role: "user" | "manager" | "admin" | "parent" | "school";
   organizationId: string | null;
   isSubscribed: boolean | null;
   createdAt: Date;
   updatedAt: Date;
+  parentId: string | null;
+  schoolId: string | null;
 }
 
 const logService = new LogService();
@@ -105,6 +107,8 @@ export const logUserActivityController = async (
     }
 
     const organizationId = user[0].organizationId;
+    const parentId = user[0].parentId;
+    const schoolId = user[0].schoolId;
 
     // Log user activity regardless of whether the URL is blocked
     await logService.logUserActivity(
@@ -113,6 +117,8 @@ export const logUserActivityController = async (
       url,
       duration,
       organizationId,
+      parentId,
+      schoolId,
     );
     res.status(201).send("User activity logged successfully");
   } catch (error) {
@@ -140,6 +146,8 @@ export const getAllLogsController = async (req: Request, res: Response) => {
       userInfo.role === "manager"
         ? (userInfo.organizationId ?? undefined)
         : undefined,
+      userInfo.role === "parent" ? (userInfo.parentId ?? undefined) : undefined,
+      userInfo.role === "school" ? (userInfo.schoolId ?? undefined) : undefined,
     );
     logger.info(logs);
     res.status(200).json(logs);
@@ -157,6 +165,8 @@ export const deleteAllLogsController = async (req: Request, res: Response) => {
       userInfo.role === "manager"
         ? (userInfo.organizationId ?? undefined)
         : undefined,
+      userInfo.role === "parent" ? (userInfo.parentId ?? undefined) : undefined,
+      userInfo.role === "school" ? (userInfo.schoolId ?? undefined) : undefined,
     );
     res.status(200).send("All logs deleted successfully");
   } catch (error: any) {
@@ -176,6 +186,8 @@ export const getTotalTimeSpentPerWebsiteController = async (
       userInfo.role === "manager"
         ? (userInfo.organizationId ?? undefined)
         : undefined,
+      userInfo.role === "parent" ? (userInfo.parentId ?? undefined) : undefined,
+      userInfo.role === "school" ? (userInfo.schoolId ?? undefined) : undefined,
     );
     res.status(200).json(data);
   } catch (error: any) {

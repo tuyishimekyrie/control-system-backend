@@ -1,5 +1,3 @@
-// routes/blockedWebsites.ts
-
 import express from "express";
 import { BlockedWebsiteController } from "../controllers/BlockedWebsiteController";
 
