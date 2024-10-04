@@ -182,12 +182,15 @@ export const getTotalTimeSpentPerWebsiteController = async (
     const userInfo = await getUserFromToken(req, res);
     if (!userInfo) return;
 
+    const filter = req.query.filter as string;
+
     const data = await logService.getTotalTimeSpentPerWebsite(
       userInfo.role === "manager"
         ? (userInfo.organizationId ?? undefined)
         : undefined,
       userInfo.role === "parent" ? (userInfo.parentId ?? undefined) : undefined,
       userInfo.role === "school" ? (userInfo.schoolId ?? undefined) : undefined,
+      filter,
     );
     res.status(200).json(data);
   } catch (error: any) {

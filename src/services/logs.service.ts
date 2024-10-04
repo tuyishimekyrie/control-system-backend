@@ -1,6 +1,6 @@
 import { dbObj } from "../../drizzle/db";
 import { userLogs } from "../models/userlogs";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 import { getBaseDomain } from "../utils/ParsingUrl";
 import { users } from "../models";
 
@@ -102,6 +102,7 @@ export class LogService {
     organizationId?: string,
     parentId?: string,
     schoolId?: string,
+    filter?: string,
   ) {
     try {
       const database = await dbObj;
@@ -115,6 +116,14 @@ export class LogService {
       }
       if (schoolId) {
         query.where(eq(userLogs.schoolId, schoolId));
+      }
+      console.log("filter", filter);
+      if (filter === "Today") {
+        query.where(sql`DATE(date) = CURDATE()`);
+      } else if (filter === "Last 7 Days") {
+        query.where(sql`DATE(date) >= CURDATE() - INTERVAL 7 DAY`);
+      } else if (filter === "Last 30 Days") {
+        query.where(sql`DATE(date) >= CURDATE() - INTERVAL 30 DAY`);
       }
 
       const logs = await query;
@@ -136,9 +145,6 @@ export class LogService {
       const top10Result = result
         .sort((a, b) => b.totalDuration - a.totalDuration)
         .slice(0, 10);
-
-      console.log("Top 10 websites by total time spent:");
-      console.log(top10Result);
 
       return top10Result;
     } catch (error: any) {
