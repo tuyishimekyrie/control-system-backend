@@ -115,6 +115,18 @@ export const getUserByEmail = async (req: Request, res: Response) => {
   }
 };
 
+export const getUserByEmails = async (req: Request, res: Response) => {
+  try {
+    const userInfo = await getUserFromToken(req, res);
+    if (!userInfo) return;
+
+    const { email } = req.params;
+    const user = await userService.getOneUserByEmail(email    );
+    res.status(200).json(user);
+  } catch (error: any) {
+    res.status(404).send(`User not found: ${error.message}`);
+  }
+};
 export const updateUserController = async (req: Request, res: Response) => {
   try {
     const userInfo = await getUserFromToken(req, res);
