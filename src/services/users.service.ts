@@ -74,6 +74,26 @@ export class UserService {
     }
   }
 
+
+public async getOneUserByEmail(email: string): Promise<UserType> {
+  try {
+    const result = await (await dbObj)
+      .select()
+      .from(users)
+      .where(eq(users.email, email)); // Correct column reference
+
+    if (result.length === 0) {
+      throw new Error("User not found");
+    }
+
+    return result[0]; // Return the first user found
+  } catch (error: any) {
+    console.error(`Error fetching user by email: ${error.message}`);
+    throw error;
+  }
+}
+
+
   public async updateUser(
     id: string,
     updatedData: UpdateUserData,
