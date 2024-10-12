@@ -16,6 +16,7 @@ import userRoute from "./users.route";
 import orgsRoute from "./organization.route";
 import notificationsRoutes from "./notifications.route";
 import userLocationRouter from "./userLocation.route";
+import geofencerouter from "./geofence.route";
 
 const app = express();
 
@@ -39,6 +40,7 @@ const routers: Router[] = [
   orgsRoute,
   notificationsRoutes,
   userLocationRouter,
+  geofencerouter
 ];
 
 router.use("/api/v1", routers);
