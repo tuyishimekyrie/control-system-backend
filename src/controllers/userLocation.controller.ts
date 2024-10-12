@@ -81,6 +81,7 @@ export const getAllLocations = async (req: Request, res: Response) => {
         : "";
 
     if (!organizationId) {
+      logger.error(organizationId);
       return res
         .status(400)
         .json({ message: "Missing or invalid organizationId" });
