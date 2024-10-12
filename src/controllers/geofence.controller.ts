@@ -19,8 +19,8 @@ const createGeoFence = async (req: Request, res: Response) => {
     const geofenceData = geoFenceSchema.parse(req.body);
 
     // Insert the geofence into MySQL using Drizzle ORM
-      const result = await (await dbObj).insert(geofence).values({
-        //@ts-ignore
+    const result = await (await dbObj).insert(geofence).values({
+      //@ts-ignore
       latitude: geofenceData.latitude, // Decimal value
       longitude: geofenceData.longitude, // Decimal value
       radius: geofenceData.radius, // Integer value
@@ -35,7 +35,10 @@ const createGeoFence = async (req: Request, res: Response) => {
     res.status(400).json({ error: error.message });
   }
 };
-export const fetchGeofencesByOrganization = async (req: Request, res: Response) => {
+export const fetchGeofencesByOrganization = async (
+  req: Request,
+  res: Response,
+) => {
   const { organizationId } = req.query;
 
   if (!organizationId) {
@@ -48,7 +51,7 @@ export const fetchGeofencesByOrganization = async (req: Request, res: Response) 
     )
       .select()
       .from(geofence)
-      .where(eq(geofence.organizationId,organizationId as string));
+      .where(eq(geofence.organizationId, organizationId as string));
 
     if (result.length === 0) {
       return res

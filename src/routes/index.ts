@@ -40,7 +40,7 @@ const routers: Router[] = [
   orgsRoute,
   notificationsRoutes,
   userLocationRouter,
-  geofencerouter
+  geofencerouter,
 ];
 
 router.use("/api/v1", routers);
