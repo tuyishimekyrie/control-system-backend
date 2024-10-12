@@ -114,7 +114,7 @@ export const getUserByEmails = async (req: Request, res: Response) => {
     if (!userInfo) return;
 
     const { email } = req.params;
-    const user = await userService.getOneUserByEmail(email    );
+    const user = await userService.getOneUserByEmail(email);
     res.status(200).json(user);
   } catch (error: any) {
     res.status(404).send(`User not found: ${error.message}`);
