@@ -1,5 +1,7 @@
 import express from "express";
-import createGeoFence, { fetchGeofencesByOrganization } from "../controllers/geofence.controller";
+import createGeoFence, {
+  fetchGeofencesByOrganization,
+} from "../controllers/geofence.controller";
 
 const geofencerouter = express.Router();
 
