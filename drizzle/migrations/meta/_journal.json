@@ -15,6 +15,13 @@
       "when": 1728715495489,
       "tag": "0001_yellow_sprite",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "5",
+      "when": 1728045634555,
+      "tag": "0017_hesitant_talon",
+      "breakpoints": true
     }
   ]
 }

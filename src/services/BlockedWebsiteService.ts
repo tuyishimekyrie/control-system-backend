@@ -79,6 +79,8 @@ export class BlockedWebsiteService {
         query.where(eq(blockedWebsites.schoolId, userId));
       } else if (role === "parent") {
         query.where(eq(blockedWebsites.parentId, userId));
+      } else if (role === "admin") {
+        return await query;
       } else {
         throw new Error("Invalid role");
       }

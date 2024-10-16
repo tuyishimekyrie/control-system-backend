@@ -1,4 +1,11 @@
-import { date, mysqlTable, text, time, varchar } from "drizzle-orm/mysql-core";
+import {
+  date,
+  mysqlTable,
+  text,
+  time,
+  varchar,
+  timestamp,
+} from "drizzle-orm/mysql-core";
 import { organizations } from "./organizations";
 import { schools } from "./schools";
 import { parents } from "./parents";

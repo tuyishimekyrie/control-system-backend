@@ -116,6 +116,8 @@ export class BlockedWebsiteController {
         userId = userInfo.schoolId || "";
       } else if (userInfo.role === "parent") {
         userId = userInfo.parentId || "";
+      } else if (userInfo.role === "admin") {
+        userId = "";
       } else {
         res.status(403).json({ message: "Unauthorized role" });
         return;
