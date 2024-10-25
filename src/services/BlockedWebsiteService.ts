@@ -58,7 +58,7 @@ export class BlockedWebsiteService {
 
       await (await dbObj).insert(blockedWebsites).values(websiteData);
 
-      await this.addHostEntry(name, url);
+      // await this.addHostEntry(name, url);
       console.log("Website blocked successfully");
     } catch (error: any) {
       console.error(`Error blocking website: ${error.message}`);
@@ -130,7 +130,7 @@ export class BlockedWebsiteService {
         .where(eq(blockedWebsites.id, id));
 
       if (oldWebsite.url) {
-        await this.removeHostEntry(oldWebsite.url);
+        // await this.removeHostEntry(oldWebsite.url);
       }
       await this.addHostEntry(name, url);
       console.log("Blocked website updated successfully");
@@ -181,7 +181,7 @@ export class BlockedWebsiteService {
         .where(eq(blockedWebsites.id, id));
 
       if (website.url) {
-        await this.removeHostEntry(website.url);
+        // await this.removeHostEntry(website.url);
       }
       console.log("Blocked website deleted successfully");
     } catch (error: any) {
@@ -307,3 +307,4 @@ export class BlockedWebsiteService {
     // Any cleanup if needed
   }
 }
+

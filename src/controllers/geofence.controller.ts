@@ -4,6 +4,7 @@ import { dbObj } from "../../drizzle/db"; // Assuming you have db instance alrea
 import { geofence } from "../models/geofence";
 import { eq } from "drizzle-orm";
 
+
 // Zod schema for geofencing data validation
 const geoFenceSchema = z.object({
   latitude: z.number().min(-90).max(90), // Decimal latitude
@@ -65,5 +66,32 @@ export const fetchGeofencesByOrganization = async (
     res.status(500).json({ error: "Failed to fetch geofences" });
   }
 };
+export const deleteGeofenceByOrganization = async (
+  req: Request,
+  res: Response,
+) => {
+  const { id } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ error: " ID is required" });
+  }
+
+  try {
+    const result = await (await dbObj).select().from(geofence);
+
+    if (result.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No geofences found for this organization" });
+    }
+
+    const response = await (await dbObj).delete(geofence).where(eq(geofence.id,id as string));
+    res.status(200).json(response);
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch geofences" });
+  }
+};
 
 export default createGeoFence;
+
