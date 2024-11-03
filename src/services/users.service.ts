@@ -141,6 +141,7 @@ export class UserService {
 
       await query;
       console.log(`User with ID ${id} updated successfully`);
+      console.log("updatedData:", updatedData);
     } catch (error: any) {
       console.error(`Error updating user: ${error.message}`);
       throw error;

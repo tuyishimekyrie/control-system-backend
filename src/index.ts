@@ -40,6 +40,7 @@ app.use(router);
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static("uploads"));
 myEventListener();
 app.get("/", (req, res) => {
   res.send("hello world");
