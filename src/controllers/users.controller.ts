@@ -133,15 +133,23 @@ export const updateUserController = async (req: Request, res: Response) => {
     if (!userInfo) return;
 
     const { id } = req.params;
+    const updatedData = req.body;
+
+    if (req.file) {
+      updatedData.image = req.file.filename;
+    }
     await userService.updateUser(
       id,
-      req.body,
+      updatedData,
       userInfo.role === "manager"
         ? (userInfo.organizationId ?? undefined)
         : undefined,
       userInfo.role === "parent" ? (userInfo.parentId ?? undefined) : undefined,
       userInfo.role === "school" ? (userInfo.schoolId ?? undefined) : undefined,
     );
+
+    console.log("body:", req.body);
+    console.log("file:", req.file);
     res.status(200).json({ message: "User updated successfully" });
   } catch (error: any) {
     res.status(404).send(`User not found: ${error.message}`);

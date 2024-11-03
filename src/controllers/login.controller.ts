@@ -1,4 +1,4 @@
-import { and, eq, or } from "drizzle-orm";
+import { and, eq, is, or } from "drizzle-orm";
 import { Request, Response } from "express";
 import { ZodError } from "zod";
 import { dbObj } from "../../drizzle/db";
@@ -83,6 +83,8 @@ export const loginController = async (req: Request, res: Response) => {
           organizationId: dbUser.organizationId,
           parentId: dbUser.parentId,
           schoolId: dbUser.schoolId,
+          image: dbUser.image,
+          isSubscribed: dbUser.isSubscribed,
         },
       });
     } else {
@@ -245,7 +247,10 @@ export const getUserByEmailController = async (req: Request, res: Response) => {
         .json({ message: `User with email ${email} not found` });
     }
 
-    res.status(200).json({ message: `User with email ${email} exists` });
+    res.status(200).json({
+      message: `User with email ${email} exists`,
+      user: dbUser,
+    });
   } catch (error: any) {
     logger.error("Error in getUserByEmailController: ", error);
     res.status(500).json({ message: "Internal Server Error" });
